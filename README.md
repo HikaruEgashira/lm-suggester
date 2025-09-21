@@ -18,6 +18,16 @@ go install github.com/HikaruEgashira/lm-suggester/cmd/lm-suggester@latest
 
 Download the latest binary from the [releases page](https://github.com/HikaruEgashira/lm-suggester/releases).
 
+### Using mise
+
+```bash
+# Install globally
+mise use -g github:HikaruEgashira/lm-suggester
+
+# Or install locally in your project
+mise use github:HikaruEgashira/lm-suggester
+```
+
 ## Usage
 
 ### Basic Usage

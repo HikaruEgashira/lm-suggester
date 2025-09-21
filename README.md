@@ -230,54 +230,20 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 ## LLM Code Review Prompt
 
-Use this prompt to enable one-shot code review with LLMs that automatically posts suggestions to GitHub PRs:
+Minimal prompt for automated PR review with lm-suggester:
 
 ```
-You are a code reviewer. Analyze the provided code changes and suggest improvements.
+Analyze the code and output JSON suggestions (one per line, not an array):
 
-IMPORTANT: Your output will be directly piped to lm-suggester and reviewdog, so output ONLY valid JSON objects.
-
-For each suggestion, output a JSON object on a single line:
-{
-  "file_path": "path/to/file.ext",
-  "base_text": "full file content",
-  "lm_before": "exact code snippet to replace (must match exactly)",
-  "lm_after": "suggested replacement code",
-  "message": "clear explanation of why this change improves the code"
-}
+{"file_path":"path/to/file","base_text":"<full file content>","lm_before":"<exact match>","lm_after":"<replacement>","message":"<reason>"}
 
 Requirements:
-- Output each suggestion as a SEPARATE JSON object (one per line, NOT an array)
-- The lm_before field MUST match the exact code in the file (including whitespace)
-- Include the complete base_text to ensure accurate line number calculation
-- Focus on: error handling, security issues, performance, code quality, and best practices
+- lm_before must match exactly (including whitespace)
+- Include complete base_text for line number calculation
+- Each suggestion as separate JSON object
 
-The output will be processed by this pipeline:
-cat suggestions.json | lm-suggester | reviewdog -f=rdjson -reporter=github-pr-review
-
-Example workflow for reviewing a PR:
-1. Get PR diff: gh pr diff 123
-2. Generate suggestions and save each as a separate JSON line
-3. Process each suggestion:
-   echo '{"file_path":"main.go","base_text":"package main\n...","lm_before":"panic(err)","lm_after":"if err != nil {\n\tlog.Fatal(err)\n}","message":"Use proper error handling instead of panic"}' | lm-suggester > review1.json
-4. Submit review with required environment variables:
-   ```bash
-   # For GitHub PR review (required variables)
-   export CI_REPO_OWNER=owner        # Repository owner
-   export CI_REPO_NAME=repo          # Repository name
-   export CI_PULL_REQUEST=123        # PR number
-   export CI_COMMIT=$(gh pr view 123 --json headRefOid -q .headRefOid)  # PR head commit
-   export REVIEWDOG_GITHUB_API_TOKEN=$(gh auth token)  # GitHub token
-
-   # Run reviewdog with the generated suggestions
-   cat review*.json | reviewdog -f=rdjson -reporter=github-pr-review
-
-   # Or as a one-liner:
-   CI_REPO_OWNER=owner CI_REPO_NAME=repo CI_PULL_REQUEST=123 \
-   CI_COMMIT=$(gh pr view 123 --json headRefOid -q .headRefOid) \
-   REVIEWDOG_GITHUB_API_TOKEN=$(gh auth token) \
-   cat review*.json | reviewdog -f=rdjson -reporter=github-pr-review
-   ```
+Pipeline:
+cat suggestion.json | lm-suggester | CI_REPO_OWNER=owner CI_REPO_NAME=repo CI_PULL_REQUEST=123 CI_COMMIT=$(gh pr view 123 -q .headRefOid) REVIEWDOG_GITHUB_API_TOKEN=$(gh auth token) reviewdog -f=rdjson -reporter=github-pr-review
 ```
 
 ## Related Projects

@@ -1,0 +1,7 @@
+{
+  "FilePath": "utils.go",
+  "BaseText": "package utils\n\nfunc Calculate(a, b int) int {\n\tif a > b {\n\t\treturn a - b\n\t}\n\treturn b - a\n}\n",
+  "LLMBefore": "\tif a > b {\n\t\treturn a - b\n\t}\n\treturn b - a\n",
+  "LLMAfter": "\treturn abs(a - b)\n",
+  "Message": "Simplify logic using abs function"
+}

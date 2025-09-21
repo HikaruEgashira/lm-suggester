@@ -5,41 +5,9 @@ before:
     - go mod tidy
 
 builds:
-  - id: lm-suggester
-    main: ./cmd/lm-suggester
-    binary: lm-suggester
-    env:
-      - CGO_ENABLED=0
-    goos:
-      - linux
-      - darwin
-      - windows
-    goarch:
-      - amd64
-      - arm64
-      - arm
-    goarm:
-      - "6"
-      - "7"
-    ldflags:
-      - -s -w
-      - -X main.version={{.Version}}
-      - -X main.commit={{.Commit}}
-      - -X main.date={{.Date}}
-      - -X main.builtBy=goreleaser
+  - skip: true
 
-archives:
-  - id: lm-suggester
-    name_template: >-
-      {{ .ProjectName }}_
-      {{- title .Os }}_
-      {{- if eq .Arch "amd64" }}x86_64
-      {{- else if eq .Arch "386" }}i386
-      {{- else }}{{ .Arch }}{{ end }}
-      {{- if .Arm }}v{{ .Arm }}{{ end }}
-    format_overrides:
-      - goos: windows
-        format: zip
+# No archives for library-only release
 
 checksum:
   name_template: 'checksums.txt'
@@ -80,10 +48,7 @@ release:
   header: |
     ## Installation
 
-    ### Go Install
+    ### Go Module
     ```bash
-    go install github.com/HikaruEgashira/lm-suggester/cmd/lm-suggester@latest
+    go get github.com/HikaruEgashira/lm-suggester@latest
     ```
-
-    ### Binary Download
-    Download the appropriate binary for your platform from the assets below.

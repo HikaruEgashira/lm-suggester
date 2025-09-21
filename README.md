@@ -66,6 +66,8 @@ The CLI expects JSON input with the following structure:
 
 ### Integration with reviewdog
 
+#### Manual Integration
+
 Pipe the output directly to reviewdog:
 
 ```bash
@@ -75,6 +77,30 @@ your-llm-tool | lm-suggester | reviewdog -f=rdjson -reporter=github-pr-review
 # With GitHub Actions
 lm-suggester -i suggestion.json | reviewdog -f=rdjson -reporter=github-pr-check
 ```
+
+#### Automatic reviewdog Execution
+
+Use the `--reviewdog` flag to automatically run reviewdog:
+
+```bash
+# Run reviewdog with local reporter
+lm-suggester -i suggestion.json --reviewdog
+
+# Specify reporter for CI/CD
+lm-suggester -i suggestion.json --reviewdog --reporter=github-pr-review
+
+# With custom options
+lm-suggester -i suggestion.json --reviewdog \
+  --reporter=github-pr-check \
+  --filter-mode=diff_context \
+  --fail-on-error
+
+# From stdin
+echo '{"file_path":"main.go","llm_after":"fixed","message":"Fix"}' | \
+  lm-suggester --reviewdog --reporter=local
+```
+
+For available reviewdog options, see [reviewdog documentation](https://github.com/reviewdog/reviewdog).
 
 ### Examples
 
@@ -161,11 +187,15 @@ Usage:
   lm-suggester [flags]
 
 Flags:
-  -i, --input string    Input JSON file (default: stdin)
-  -o, --output string   Output file (default: stdout)
-  -p, --pretty          Pretty-print JSON output
-  -h, --help            Help for lm-suggester
-      --version         Version information
+  -i, --input string         Input JSON file (default: stdin)
+  -o, --output string        Output file (default: stdout)
+  -p, --pretty               Pretty-print JSON output
+      --reviewdog            Run reviewdog with the output
+      --reporter string      reviewdog reporter (default: local)
+      --filter-mode string   reviewdog filter mode (default: nofilter)
+      --fail-on-error        Exit with non-zero code when reviewdog finds errors
+  -h, --help                 Help for lm-suggester
+      --version              Version information
 ```
 
 ## Development

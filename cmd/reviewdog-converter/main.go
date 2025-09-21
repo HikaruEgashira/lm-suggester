@@ -19,13 +19,21 @@ var (
 )
 
 type CLIInput struct {
-	FilePath   string `json:"file_path"`
-	BaseText   string `json:"base_text"`
+	FilePath   string `json:"file_path,omitempty"`
+	BaseText   string `json:"base_text,omitempty"`
 	LLMBefore  string `json:"llm_before,omitempty"`
-	LLMAfter   string `json:"llm_after"`
-	Message    string `json:"message"`
+	LLMAfter   string `json:"llm_after,omitempty"`
+	Message    string `json:"message,omitempty"`
 	Severity   string `json:"severity,omitempty"`
 	SourceName string `json:"source_name,omitempty"`
+	// Support both camelCase and snake_case for compatibility
+	FilePathCamel   string `json:"FilePath,omitempty"`
+	BaseTextCamel   string `json:"BaseText,omitempty"`
+	LLMBeforeCamel  string `json:"LLMBefore,omitempty"`
+	LLMAfterCamel   string `json:"LLMAfter,omitempty"`
+	MessageCamel    string `json:"Message,omitempty"`
+	SeverityCamel   string `json:"Severity,omitempty"`
+	SourceNameCamel string `json:"SourceName,omitempty"`
 }
 
 func main() {
@@ -59,6 +67,29 @@ into reviewdog-compatible JSON format for code review automation.`,
 			var cliInput CLIInput
 			if err := json.Unmarshal(data, &cliInput); err != nil {
 				return fmt.Errorf("failed to parse input JSON: %w", err)
+			}
+
+			// Merge camelCase and snake_case fields
+			if cliInput.FilePath == "" && cliInput.FilePathCamel != "" {
+				cliInput.FilePath = cliInput.FilePathCamel
+			}
+			if cliInput.BaseText == "" && cliInput.BaseTextCamel != "" {
+				cliInput.BaseText = cliInput.BaseTextCamel
+			}
+			if cliInput.LLMBefore == "" && cliInput.LLMBeforeCamel != "" {
+				cliInput.LLMBefore = cliInput.LLMBeforeCamel
+			}
+			if cliInput.LLMAfter == "" && cliInput.LLMAfterCamel != "" {
+				cliInput.LLMAfter = cliInput.LLMAfterCamel
+			}
+			if cliInput.Message == "" && cliInput.MessageCamel != "" {
+				cliInput.Message = cliInput.MessageCamel
+			}
+			if cliInput.Severity == "" && cliInput.SeverityCamel != "" {
+				cliInput.Severity = cliInput.SeverityCamel
+			}
+			if cliInput.SourceName == "" && cliInput.SourceNameCamel != "" {
+				cliInput.SourceName = cliInput.SourceNameCamel
 			}
 
 			if cliInput.FilePath == "" {

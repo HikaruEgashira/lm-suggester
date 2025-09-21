@@ -43,10 +43,10 @@ jobs:
 
       - name: Test CLI
         run: |
-          # Create a test file
-          echo "package main" > test.go
-          # Test with stdin
-          echo '{"file_path":"test.go","llm_after":"package main","message":"test"}' | ./reviewdog-converter
+          # Test with example data files
+          cat _examples/testdata/simple_replacement.json | ./reviewdog-converter -p
+          # Test with file input
+          ./reviewdog-converter -i _examples/testdata/japanese_comment.json
           # Test version command
           ./reviewdog-converter version
         timeout-minutes: 2

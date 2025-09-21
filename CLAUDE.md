@@ -29,7 +29,7 @@ cat _examples/testdata/simple_replacement.json | go run _examples/simple/main.go
 
 - public.go: 公開 API (`Input` 構造体、`BuildRDJSON` 関数)
   - LLM の提案を受け取り、reviewdog JSON 形式に変換
-  - `LLMBefore` が空の場合は最小差分を自動計算
+  - `LMBefore` が空の場合は最小差分を自動計算
 
 - align.go: 差分位置の整列処理
   - ベーステキストと LLM 提案の位置合わせ
@@ -50,8 +50,8 @@ cat _examples/testdata/simple_replacement.json | go run _examples/simple/main.go
 type Input struct {
     FilePath   string  // 対象ファイルパス
     BaseText   string  // 元のファイル内容
-    LLMBefore  string  // 変更前テキスト（optional）
-    LLMAfter   string  // 変更後テキスト
+    LMBefore  string  // 変更前テキスト（optional）
+    LMAfter   string  // 変更後テキスト
     Message    string  // サジェストメッセージ
     Severity   string  // 重要度
     SourceName string  // ツール名

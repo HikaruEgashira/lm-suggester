@@ -1,0 +1,14 @@
+{
+  "FilePath": "src/main.go",
+  "BaseText": "package main\n\nfunc main() {\n\tprintln(\"hello\")\n}\n",
+  "LMBefore": "\tprintln(\"hello\")",
+  "LMAfter": "\tfmt.Println(\"Hello, World!\")",
+  "Message": "Use fmt.Println for proper formatting",
+  "Severity": "WARNING",
+  "SourceName": "custom-linter",
+  "customField": "This will be preserved",
+  "metadata": {
+    "version": "1.0.0",
+    "timestamp": "2024-01-20T10:30:00Z"
+  }
+}

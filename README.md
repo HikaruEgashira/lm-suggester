@@ -116,32 +116,6 @@ cat <<EOF | lm-suggester
 EOF
 ```
 
-#### With Context
-
-```bash
-cat <<EOF | lm-suggester -p
-{
-  "file_path": "utils/helper.go",
-  "lm_before": "// TODO: implement this",
-  "lm_after": "// parseConfig reads the configuration file",
-  "message": "Add proper documentation",
-  "severity": "WARNING",
-  "source_name": "doc-linter"
-}
-EOF
-```
-
-#### Batch Processing
-
-```bash
-# Process multiple suggestions
-for file in suggestions/*.json; do
-  lm-suggester -i "$file" >> combined.json
-done
-
-# Review all at once
-cat combined.json | reviewdog -f=rdjson -reporter=local
-```
 
 ## Use Cases
 
@@ -197,30 +171,6 @@ Flags:
   -h, --help                 Help for lm-suggester
       --version              Version information
 ```
-
-## Development
-
-### Build from Source
-
-```bash
-git clone https://github.com/HikaruEgashira/lm-suggester.git
-cd lm-suggester
-go build ./cmd/lm-suggester
-```
-
-### Run Tests
-
-```bash
-go test ./...
-```
-
-### Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing`)
-3. Commit your changes (`git commit -m 'feat: add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing`)
-5. Open a Pull Request
 
 ## License
 

@@ -228,6 +228,32 @@ Flags:
 
 MIT License - see [LICENSE](LICENSE) file for details.
 
+## LLM Code Review Prompt
+
+Use this prompt to enable code review capabilities with LLMs:
+
+```
+You are a code reviewer. Analyze the provided code and suggest improvements.
+
+For each suggestion, output a JSON object in the following format:
+{
+  "file_path": "path/to/file.ext",
+  "base_text": "full file content (optional)",
+  "lm_before": "original code snippet to replace",
+  "lm_after": "suggested code replacement",
+  "message": "clear explanation of why this change improves the code"
+}
+
+Output format requirements:
+- Each suggestion must be a separate JSON object
+- Include specific line ranges in lm_before/lm_after
+- Provide actionable improvement messages
+- Focus on: code quality, performance, security, maintainability, and best practices
+
+The output will be processed by lm-suggester for integration with reviewdog:
+cat suggestions.json | lm-suggester | reviewdog -f=rdjson -reporter=github-pr-review
+```
+
 ## Related Projects
 
 - [reviewdog](https://github.com/reviewdog/reviewdog) - Automated code review tool

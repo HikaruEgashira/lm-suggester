@@ -38,7 +38,10 @@ jobs:
         timeout-minutes: 5
 
       - name: Build CLI
-        run: go build -v ./cmd/lm-suggester
+        run: |
+          cd cmd/lm-suggester
+          go mod download
+          go build -v -o ../../lm-suggester .
         timeout-minutes: 5
 
       - name: Test CLI

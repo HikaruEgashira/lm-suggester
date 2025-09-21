@@ -233,9 +233,7 @@ MIT License - see [LICENSE](LICENSE) file for details.
 Minimal prompt for automated PR review with lm-suggester:
 
 ```
-Analyze the code and execute the following pipeline:
-
-1. Generate suggestions in this format (one per line, not an array):
+Analyze the code and generate suggestions in this format (one per line, not an array):
 {"file_path":"path/to/file","base_text":"<full file content>","lm_before":"<exact match>","lm_after":"<replacement>","message":"<reason>"}
 
 Requirements:
@@ -243,8 +241,8 @@ Requirements:
 - Include complete base_text for line number calculation
 - Each suggestion as separate JSON object
 
-2. Save suggestions and execute:
-cat suggestions.json | lm-suggester --reviewdog --reporter=github-pr-review
+Then execute this pipeline:
+echo '<your suggestions here>' | lm-suggester --reviewdog --reporter=github-pr-review
 ```
 
 ## Related Projects

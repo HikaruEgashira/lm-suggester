@@ -100,19 +100,7 @@ echo '{"file_path":"main.go","llm_after":"fixed","message":"Fix"}' | \
   lm-suggester --reviewdog --reporter=local
 ```
 
-Available reviewdog options:
-- `--reviewdog`: Enable automatic reviewdog execution
-- `--reporter`: Set reviewdog reporter (default: local)
-  - `local`: Show results in terminal
-  - `github-pr-review`: GitHub PR review comments
-  - `github-pr-check`: GitHub PR checks
-  - `gitlab-mr-discussion`: GitLab MR discussions
-- `--filter-mode`: Set filter mode (default: added)
-  - `added`: Only new issues
-  - `diff_context`: Issues in diff context
-  - `file`: All issues in changed files
-  - `nofilter`: All issues
-- `--fail-on-error`: Exit with non-zero code if issues found
+For available reviewdog options, see [reviewdog documentation](https://github.com/reviewdog/reviewdog).
 
 ### Examples
 

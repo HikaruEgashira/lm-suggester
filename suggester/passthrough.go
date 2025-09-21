@@ -3,6 +3,7 @@ package suggester
 import (
 	"encoding/json"
 	"fmt"
+	"os"
 )
 
 // PassthroughTransformer provides pure passthrough JSON transformation
@@ -43,18 +44,43 @@ func (pt *PassthroughTransformer) Transform(input []byte) ([]byte, error) {
 
 // StandardComputeCore extracts necessary fields and computes positions
 func StandardComputeCore(input map[string]interface{}) (*CoreResult, error) {
-	// Extract required fields
-	filePath, _ := input["FilePath"].(string)
-	baseText, _ := input["BaseText"].(string)
-	lmBefore, _ := input["LMBefore"].(string)
-	lmAfter, _ := input["LMAfter"].(string)
+	// Extract required fields - support both camelCase and snake_case
+	filePath := getFieldWithFallback(input, "FilePath", "file_path")
+	baseText := getFieldWithFallback(input, "BaseText", "base_text")
+	lmBefore := getFieldWithFallback(input, "LMBefore", "lm_before")
+	lmAfter := getFieldWithFallback(input, "LMAfter", "lm_after")
 
 	if lmAfter == "" {
-		return nil, fmt.Errorf("LMAfter is required")
+		return nil, fmt.Errorf("LMAfter/lm_after is required")
+	}
+
+	// BaseText is required for proper diff calculation
+	if baseText == "" {
+		// Try to read from file if FilePath is provided
+		if filePath != "" {
+			content, err := os.ReadFile(filePath)
+			if err == nil {
+				baseText = string(content)
+			} else {
+				return nil, fmt.Errorf("BaseText/base_text is required (failed to read from %s: %w)", filePath, err)
+			}
+		} else {
+			return nil, fmt.Errorf("BaseText/base_text is required")
+		}
 	}
 
 	// Compute positions using existing logic
 	return ExtractCore(filePath, baseText, lmBefore, lmAfter)
+}
+
+// getFieldWithFallback tries to get a field with multiple possible names
+func getFieldWithFallback(input map[string]interface{}, names ...string) string {
+	for _, name := range names {
+		if val, ok := input[name].(string); ok && val != "" {
+			return val
+		}
+	}
+	return ""
 }
 
 // ReviewdogInjector injects computed values for reviewdog format

@@ -80,12 +80,6 @@ release:
   header: |
     ## Installation
 
-    ### Homebrew (macOS/Linux)
-    ```bash
-    brew tap HikaruEgashira/tap
-    brew install llm-suggester
-    ```
-
     ### Go Install
     ```bash
     go install github.com/HikaruEgashira/llm-suggester/cmd/llm-suggester@latest
@@ -93,18 +87,3 @@ release:
 
     ### Binary Download
     Download the appropriate binary for your platform from the assets below.
-
-brews:
-  - name: llm-suggester
-    repository:
-      owner: HikaruEgashira
-      name: homebrew-tap
-      token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
-    folder: Formula
-    homepage: "https://github.com/HikaruEgashira/llm-suggester"
-    description: "Convert LLM suggestions to reviewdog JSON format"
-    license: "MIT"
-    test: |
-      system "#{bin}/llm-suggester", "version"
-    install: |
-      bin.install "llm-suggester"

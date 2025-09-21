@@ -119,9 +119,12 @@ func ReviewdogInjector(output map[string]interface{}, core *CoreResult) error {
 		afterText = afterText[:len(afterText)-1]
 	}
 
-	if message, exists := output["Message"]; exists && message != "" {
+	// Check both Message (capital) and message (lowercase) for compatibility
+	message := getFieldWithFallback(output, "Message", "message")
+	if message != "" {
 		diagnostic["message"] = fmt.Sprintf("%v\n```suggestion\n%s\n```", message, afterText)
 		delete(output, "Message") // Remove from top level
+		delete(output, "message") // Remove lowercase version too
 	} else {
 		// Default message with suggestion
 		diagnostic["message"] = fmt.Sprintf("Replace code with suggestion\n```suggestion\n%s\n```", afterText)
@@ -221,9 +224,11 @@ func SARIFInjector(output map[string]interface{}, core *CoreResult) error {
 
 	results := run["results"].([]interface{})
 
+	// Check both Message (capital) and message (lowercase)
+	messageText := getFieldWithFallback(output, "Message", "message")
 	result := map[string]interface{}{
 		"message": map[string]interface{}{
-			"text": output["Message"],
+			"text": messageText,
 		},
 		"locations": []interface{}{
 			map[string]interface{}{
@@ -304,6 +309,7 @@ func SARIFInjector(output map[string]interface{}, core *CoreResult) error {
 	delete(output, "LMBefore")
 	delete(output, "LMAfter")
 	delete(output, "Message")
+	delete(output, "message") // Also remove lowercase version
 
 	return nil
 }

@@ -1,0 +1,7 @@
+{
+  "FilePath": "handler.go",
+  "BaseText": "package handler\n\n// ユーザー情報を取得する関数\nfunc GetUser(id string) (*User, error) {\n\treturn nil, nil\n}\n",
+  "LLMBefore": "// ユーザー情報を取得する関数\n",
+  "LLMAfter": "// GetUser retrieves user information by ID\n",
+  "Message": "Translate comment to English for consistency"
+}

@@ -1,0 +1,7 @@
+{
+  "FilePath": "main.go",
+  "BaseText": "package main\n\nfunc main() {\n\tprintln(\"hello\")\n}\n",
+  "LLMBefore": "\tprintln(\"hello\")\n",
+  "LLMAfter": "\tfmt.Println(\"Hello, World!\")\n",
+  "Message": "Use fmt.Println for proper formatting"
+}

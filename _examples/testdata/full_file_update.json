@@ -1,0 +1,7 @@
+{
+  "FilePath": "config.yaml",
+  "BaseText": "version: 1.0\nport: 8080\ndebug: true\n",
+  "LLMAfter": "version: 1.0\nport: 3000\ndebug: false\n",
+  "Message": "Update configuration for production",
+  "Severity": "INFO"
+}

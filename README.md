@@ -250,8 +250,12 @@ Output format requirements:
 - Provide actionable improvement messages
 - Focus on: code quality, performance, security, maintainability, and best practices
 
-The output will be processed by lm-suggester for integration with reviewdog:
-cat suggestions.json | lm-suggester | reviewdog -f=rdjson -reporter=github-pr-review
+After generating the JSON output, run the following command to execute the review:
+echo '<your_json_output>' | lm-suggester --reviewdog --reporter=github-pr-review
+
+Example execution:
+echo '{"file_path":"main.go","lm_before":"panic(err)","lm_after":"log.Fatal(err)","message":"Use log.Fatal instead of panic for better error handling"}' | \
+  lm-suggester --reviewdog --reporter=local
 ```
 
 ## Related Projects

@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func TestDetectJSONL(t *testing.T) {
+func TestdetectJSONL(t *testing.T) {
 	tests := []struct {
 		name     string
 		input    string
@@ -58,21 +58,21 @@ not json
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result := DetectJSONL([]byte(tt.input))
+			result := detectJSONL([]byte(tt.input))
 			if result != tt.expected {
-				t.Errorf("DetectJSONL() = %v, want %v", result, tt.expected)
+				t.Errorf("detectJSONL() = %v, want %v", result, tt.expected)
 			}
 		})
 	}
 }
 
-func TestConvertJSONL(t *testing.T) {
+func TestconvertJSONL(t *testing.T) {
 	jsonl := `{"FilePath": "main.go", "BaseText": "package main\n\nfunc main() {\n\tprintln(\"hello\")\n}\n", "LMBefore": "\tprintln(\"hello\")", "LMAfter": "\tfmt.Println(\"Hello\")", "Message": "Use fmt.Println"}
 {"FilePath": "test.go", "BaseText": "package main\n\nfunc test() {\n\treturn\n}\n", "LMBefore": "func test()", "LMAfter": "func Test()", "Message": "Export function"}`
 
-	result, err := ConvertJSONL([]byte(jsonl), "reviewdog")
+	result, err := convertJSONL([]byte(jsonl), "reviewdog")
 	if err != nil {
-		t.Fatalf("ConvertJSONL() error = %v", err)
+		t.Fatalf("convertJSONL() error = %v", err)
 	}
 
 	// Parse result to verify structure
@@ -97,7 +97,7 @@ func TestConvertJSONL(t *testing.T) {
 	}
 }
 
-func TestConvertAuto(t *testing.T) {
+func TestConvert(t *testing.T) {
 	tests := []struct {
 		name  string
 		input string
@@ -123,12 +123,12 @@ func TestConvertAuto(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result, err := ConvertAuto([]byte(tt.input), "reviewdog")
+			result, err := Convert([]byte(tt.input), "reviewdog")
 			if err != nil {
 				// For this test, we're checking both regular JSON and JSONL inputs
 				// Some might fail due to missing fields, but that's expected
 				if !strings.Contains(err.Error(), "LMAfter") && !strings.Contains(err.Error(), "BaseText") {
-					t.Errorf("ConvertAuto() unexpected error = %v", err)
+					t.Errorf("Convert() unexpected error = %v", err)
 				}
 				return
 			}
@@ -136,7 +136,7 @@ func TestConvertAuto(t *testing.T) {
 			// Just verify it produces valid JSON
 			var output interface{}
 			if err := json.Unmarshal(result, &output); err != nil {
-				t.Errorf("ConvertAuto() produced invalid JSON: %v", err)
+				t.Errorf("Convert() produced invalid JSON: %v", err)
 			}
 		})
 	}

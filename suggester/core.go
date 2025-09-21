@@ -16,7 +16,6 @@ type CoreResult struct {
 // ExtractCore performs core processing (diff detection and position calculation)
 // without any format-specific transformations.
 func ExtractCore(filePath, baseText, lmBefore, lmAfter string) (*CoreResult, error) {
-	// Normalize line endings
 	baseText = normalizeText(baseText)
 	lmAfter = normalizeText(lmAfter)
 	if lmBefore != "" {
@@ -27,7 +26,6 @@ func ExtractCore(filePath, baseText, lmBefore, lmAfter string) (*CoreResult, err
 	var beforeText, afterText string
 
 	if lmBefore != "" {
-		// If LMBefore is provided, align it with the base text
 		start, end, err := alignRange(baseText, lmBefore)
 		if err != nil {
 			return nil, err
@@ -37,7 +35,6 @@ func ExtractCore(filePath, baseText, lmBefore, lmAfter string) (*CoreResult, err
 		beforeText = lmBefore
 		afterText = lmAfter
 	} else {
-		// If LMBefore is not provided, find minimal diff range
 		start, end, afterBlock, err := minimalRangeFromFullAfter(baseText, lmAfter)
 		if err != nil {
 			return nil, err
@@ -48,7 +45,6 @@ func ExtractCore(filePath, baseText, lmBefore, lmAfter string) (*CoreResult, err
 		afterText = afterBlock
 	}
 
-	// Convert byte offsets to line/column
 	startLine, startCol := offsetToLineCol(baseText, startOffset)
 	endLine, endCol := offsetToLineCol(baseText, endOffset)
 

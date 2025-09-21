@@ -5,24 +5,19 @@ import "github.com/sergi/go-diff/diffmatchpatch"
 func minimalRangeFromFullAfter(base, after string) (start, end int, afterBlock string, err error) {
 	dmp := diffmatchpatch.New()
 
-	// DiffCommonPrefix returns rune count, need to convert to byte offset
 	cpRunes := dmp.DiffCommonPrefix(base, after)
 	baseRunes := []rune(base)
 
-	// Convert rune index to byte offset for prefix
 	cpBytes := 0
 	if cpRunes > 0 && cpRunes <= len(baseRunes) {
 		cpBytes = len(string(baseRunes[:cpRunes]))
 	}
 
-	// Get the remaining parts after common prefix
 	bs := base[cpBytes:]
 	as := after[cpBytes:]
 
-	// DiffCommonSuffix also returns rune count
 	csRunes := dmp.DiffCommonSuffix(bs, as)
 
-	// Convert rune count to byte offset for suffix
 	csBytes := 0
 	if csRunes > 0 {
 		bsRunes := []rune(bs)
@@ -37,7 +32,6 @@ func minimalRangeFromFullAfter(base, after string) (start, end int, afterBlock s
 		end = start
 	}
 
-	// Calculate afterBlock using byte offsets
 	afterBlockEndBytes := len(as) - csBytes
 	if afterBlockEndBytes < 0 {
 		afterBlockEndBytes = 0

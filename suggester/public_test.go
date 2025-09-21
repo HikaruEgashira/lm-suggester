@@ -47,7 +47,7 @@ func TestWithBefore_SingleLine(t *testing.T) {
 		"LMAfter":  "B!\n",
 	}
 	inputJSON, _ := json.Marshal(input)
-	out, err := ConvertJSON(inputJSON, "reviewdog")
+	out, err := Convert(inputJSON, "reviewdog")
 	if err != nil {
 		t.Fatalf("err: %v", err)
 	}
@@ -71,7 +71,7 @@ func TestWithBefore_MultiLine(t *testing.T) {
 		"LMAfter":  "Y\nZ\n",
 	}
 	inputJSON, _ := json.Marshal(input)
-	out, err := ConvertJSON(inputJSON, "reviewdog")
+	out, err := Convert(inputJSON, "reviewdog")
 	if err != nil {
 		t.Fatalf("err: %v", err)
 	}
@@ -90,7 +90,7 @@ func TestNoBefore_FullAfterDiff(t *testing.T) {
 		"LMAfter":  "a\nB!\nc\n",
 	}
 	inputJSON, _ := json.Marshal(input)
-	out, err := ConvertJSON(inputJSON, "reviewdog")
+	out, err := Convert(inputJSON, "reviewdog")
 	if err != nil {
 		t.Fatalf("err: %v", err)
 	}
@@ -113,7 +113,7 @@ func TestCRLF_Normalize(t *testing.T) {
 		"LMAfter":  "B!\r\n",
 	}
 	inputJSON, _ := json.Marshal(input)
-	out, err := ConvertJSON(inputJSON, "reviewdog")
+	out, err := Convert(inputJSON, "reviewdog")
 	if err != nil {
 		t.Fatalf("err: %v", err)
 	}
@@ -134,7 +134,7 @@ func TestDuplicate_FirstMatchPreferred(t *testing.T) {
 		"LMAfter":  "BAR\n",
 	}
 	inputJSON, _ := json.Marshal(input)
-	out, err := ConvertJSON(inputJSON, "reviewdog")
+	out, err := Convert(inputJSON, "reviewdog")
 	if err != nil {
 		t.Fatalf("err: %v", err)
 	}
@@ -152,7 +152,7 @@ func TestEmptyAfter_Error(t *testing.T) {
 		"LMAfter":  "",
 	}
 	inputJSON, _ := json.Marshal(input)
-	_, err := ConvertJSON(inputJSON, "reviewdog")
+	_, err := Convert(inputJSON, "reviewdog")
 	if err == nil {
 		t.Fatalf("want ErrEmptyAfter, got %v", err)
 	}
@@ -166,7 +166,7 @@ func TestUTF8_Japanese(t *testing.T) {
 		"LMAfter":  "// Hello, World!\n",
 	}
 	inputJSON, _ := json.Marshal(input)
-	out, err := ConvertJSON(inputJSON, "reviewdog")
+	out, err := Convert(inputJSON, "reviewdog")
 	if err != nil {
 		t.Fatalf("err: %v", err)
 	}
@@ -190,7 +190,7 @@ func TestUTF8_ChineseEmoji(t *testing.T) {
 		"LMAfter":  "已修改的行 ✅\n",
 	}
 	inputJSON, _ := json.Marshal(input)
-	out, err := ConvertJSON(inputJSON, "reviewdog")
+	out, err := Convert(inputJSON, "reviewdog")
 	if err != nil {
 		t.Fatalf("err: %v", err)
 	}
@@ -214,7 +214,7 @@ func TestUTF8_MixedContent(t *testing.T) {
 		"LMAfter":  "// Japanese comment\n",
 	}
 	inputJSON, _ := json.Marshal(input)
-	out, err := ConvertJSON(inputJSON, "reviewdog")
+	out, err := Convert(inputJSON, "reviewdog")
 	if err != nil {
 		t.Fatalf("err: %v", err)
 	}
@@ -231,7 +231,7 @@ func TestUTF8_NoBefore_FullAfter(t *testing.T) {
 		"LMAfter":  "こんにちは\nせかい\nWorld\n",
 	}
 	inputJSON, _ := json.Marshal(input)
-	out, err := ConvertJSON(inputJSON, "reviewdog")
+	out, err := Convert(inputJSON, "reviewdog")
 	if err != nil {
 		t.Fatalf("err: %v", err)
 	}

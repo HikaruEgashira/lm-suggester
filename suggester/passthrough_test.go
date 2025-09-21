@@ -198,7 +198,7 @@ func TestPassthroughWithArbitraryJSON(t *testing.T) {
 	}
 }
 
-func TestConvertJSON_DirectAPI(t *testing.T) {
+func TestConvert_DirectAPI(t *testing.T) {
 	// Test the direct JSON API
 	input := map[string]interface{}{
 		"FilePath":    "main.go",
@@ -213,9 +213,9 @@ func TestConvertJSON_DirectAPI(t *testing.T) {
 		t.Fatalf("Failed to marshal input: %v", err)
 	}
 
-	result, err := ConvertJSON(inputJSON, "reviewdog")
+	result, err := Convert(inputJSON, "reviewdog")
 	if err != nil {
-		t.Fatalf("ConvertJSON failed: %v", err)
+		t.Fatalf("Convert failed: %v", err)
 	}
 
 	var output map[string]interface{}

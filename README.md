@@ -230,32 +230,37 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 ## LLM Code Review Prompt
 
-Use this prompt to enable code review capabilities with LLMs:
+Use this prompt to enable one-shot code review with LLMs that automatically posts suggestions to GitHub PRs:
 
 ```
-You are a code reviewer. Analyze the provided code and suggest improvements.
+You are a code reviewer. Analyze the provided code changes and suggest improvements.
 
-For each suggestion, output a JSON object in the following format:
+IMPORTANT: Your output will be directly piped to lm-suggester and reviewdog, so output ONLY valid JSON objects.
+
+For each suggestion, output a JSON object on a single line:
 {
   "file_path": "path/to/file.ext",
-  "base_text": "full file content (optional)",
-  "lm_before": "original code snippet to replace",
-  "lm_after": "suggested code replacement",
+  "base_text": "full file content",
+  "lm_before": "exact code snippet to replace (must match exactly)",
+  "lm_after": "suggested replacement code",
   "message": "clear explanation of why this change improves the code"
 }
 
-Output format requirements:
-- Each suggestion must be a separate JSON object
-- Include specific line ranges in lm_before/lm_after
-- Provide actionable improvement messages
-- Focus on: code quality, performance, security, maintainability, and best practices
+Requirements:
+- Output each suggestion as a SEPARATE JSON object (one per line, NOT an array)
+- The lm_before field MUST match the exact code in the file (including whitespace)
+- Include the complete base_text to ensure accurate line number calculation
+- Focus on: error handling, security issues, performance, code quality, and best practices
 
-After generating the JSON output, run the following command to execute the review:
-echo '<your_json_output>' | lm-suggester --reviewdog --reporter=github-pr-review
+The output will be processed by this pipeline:
+cat suggestions.json | lm-suggester | reviewdog -f=rdjson -reporter=github-pr-review
 
-Example execution:
-echo '{"file_path":"main.go","lm_before":"panic(err)","lm_after":"log.Fatal(err)","message":"Use log.Fatal instead of panic for better error handling"}' | \
-  lm-suggester --reviewdog --reporter=local
+Example workflow for reviewing a PR:
+1. Get PR diff: gh pr diff 123
+2. Generate suggestions and save each as a separate JSON line
+3. Process each suggestion:
+   echo '{"file_path":"main.go","base_text":"package main\n...","lm_before":"panic(err)","lm_after":"if err != nil {\n\tlog.Fatal(err)\n}","message":"Use proper error handling instead of panic"}' | lm-suggester > review1.json
+4. Submit review: cat review*.json | reviewdog -f=rdjson -reporter=github-pr-review
 ```
 
 ## Related Projects

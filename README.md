@@ -242,7 +242,7 @@ Requirements:
 - Each suggestion as separate JSON object
 
 Then execute this pipeline:
-echo '<your suggestions here>' | lm-suggester --reviewdog --reporter=github-pr-review
+echo '<your suggestions here>' | lm-suggester | CI_REPO_OWNER=owner CI_REPO_NAME=repo CI_PULL_REQUEST=123 CI_COMMIT=$(gh pr view 123 -q .headRefOid) REVIEWDOG_GITHUB_API_TOKEN=$(gh auth token) reviewdog -f=rdjson -reporter=github-pr-review
 ```
 
 ## Related Projects

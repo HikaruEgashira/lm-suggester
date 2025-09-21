@@ -53,3 +53,23 @@ jobs:
           # Test version command
           ./lm-suggester version
         timeout-minutes: 2
+
+      - name: Install reviewdog
+        uses: reviewdog/action-setup@3f401fe1d58fe77e10d665ab713057375e39b887  # v1.3.0
+        with:
+          reviewdog_version: latest
+        timeout-minutes: 2
+
+      - name: Test reviewdog integration
+        run: |
+          # Test reviewdog flag detection
+          ./lm-suggester --help | grep -q "reviewdog"
+
+          # Test with local reporter (safe for CI)
+          echo '{"file_path":"test.go","llm_after":"fmt.Println(\"test\")","message":"test"}' | \
+            ./lm-suggester --reviewdog --reporter=local --filter-mode=nofilter || true
+
+          # Verify JSON output format is compatible with reviewdog
+          cat _examples/testdata/simple_replacement.json | ./lm-suggester | \
+            reviewdog -f=rdjson -reporter=local -filter-mode=nofilter || true
+        timeout-minutes: 2

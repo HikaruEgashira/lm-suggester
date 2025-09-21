@@ -6,8 +6,13 @@ import (
 )
 
 type rdjson struct {
-	Source      string       `json:"source"`
+	Source      source       `json:"source"`
 	Diagnostics []diagnostic `json:"diagnostics"`
+}
+
+type source struct {
+	Name string `json:"name"`
+	URL  string `json:"url,omitempty"`
 }
 
 type diagnostic struct {
@@ -50,7 +55,9 @@ func marshalRDJSON(src, path, msg string, startLine, startCol, endLine, endCol i
 		src = "reviewdog-converter"
 	}
 	out := rdjson{
-		Source: src,
+		Source: source{
+			Name: src,
+		},
 		Diagnostics: []diagnostic{
 			{
 				Message: msg,

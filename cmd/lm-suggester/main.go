@@ -1,10 +1,12 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
 	"os"
+	"os/exec"
 	"path/filepath"
 
 	"github.com/HikaruEgashira/lm-suggester/suggester"
@@ -38,9 +40,13 @@ type CLIInput struct {
 
 func main() {
 	var (
-		inputFile  string
-		outputFile string
-		pretty     bool
+		inputFile   string
+		outputFile  string
+		pretty      bool
+		reviewdog   bool
+		reporter    string
+		filterMode  string
+		failOnError bool
 	)
 
 	rootCmd := &cobra.Command{
@@ -139,7 +145,11 @@ into reviewdog-compatible JSON format for code review automation.`,
 				output = rdJSON
 			}
 
-			if outputFile != "" {
+			if reviewdog {
+				if err := runReviewdog(output, reporter, filterMode, failOnError); err != nil {
+					return fmt.Errorf("failed to run reviewdog: %w", err)
+				}
+			} else if outputFile != "" {
 				dir := filepath.Dir(outputFile)
 				if err := os.MkdirAll(dir, 0755); err != nil {
 					return fmt.Errorf("failed to create output directory: %w", err)
@@ -158,6 +168,10 @@ into reviewdog-compatible JSON format for code review automation.`,
 	rootCmd.Flags().StringVarP(&inputFile, "input", "i", "", "Input JSON file (default: stdin)")
 	rootCmd.Flags().StringVarP(&outputFile, "output", "o", "", "Output file (default: stdout)")
 	rootCmd.Flags().BoolVarP(&pretty, "pretty", "p", false, "Pretty-print JSON output")
+	rootCmd.Flags().BoolVar(&reviewdog, "reviewdog", false, "Run reviewdog with the output")
+	rootCmd.Flags().StringVar(&reporter, "reporter", "local", "reviewdog reporter (local, github-pr-review, github-pr-check, etc.)")
+	rootCmd.Flags().StringVar(&filterMode, "filter-mode", "added", "reviewdog filter mode (added, diff_context, file, nofilter)")
+	rootCmd.Flags().BoolVar(&failOnError, "fail-on-error", false, "Exit with non-zero code when reviewdog finds errors")
 
 	versionCmd := &cobra.Command{
 		Use:   "version",
@@ -175,4 +189,37 @@ into reviewdog-compatible JSON format for code review automation.`,
 	if err := rootCmd.Execute(); err != nil {
 		os.Exit(1)
 	}
+}
+
+func runReviewdog(jsonData []byte, reporter, filterMode string, failOnError bool) error {
+	if _, err := exec.LookPath("reviewdog"); err != nil {
+		return fmt.Errorf("reviewdog is not installed. Please install it from https://github.com/reviewdog/reviewdog")
+	}
+
+	args := []string{
+		"-f=rdjson",
+		fmt.Sprintf("-reporter=%s", reporter),
+		fmt.Sprintf("-filter-mode=%s", filterMode),
+	}
+
+	if failOnError {
+		args = append(args, "-fail-on-error=true")
+	}
+
+	cmd := exec.Command("reviewdog", args...)
+	cmd.Stdin = bytes.NewReader(jsonData)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+
+	if err := cmd.Run(); err != nil {
+		if exitErr, ok := err.(*exec.ExitError); ok {
+			if failOnError {
+				os.Exit(exitErr.ExitCode())
+			}
+			return fmt.Errorf("reviewdog exited with code %d", exitErr.ExitCode())
+		}
+		return err
+	}
+
+	return nil
 }

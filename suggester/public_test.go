@@ -7,7 +7,10 @@ import (
 )
 
 type rdOut struct {
-	Source      string `json:"source"`
+	Source struct {
+		Name string `json:"name"`
+		URL  string `json:"url,omitempty"`
+	} `json:"source"`
 	Diagnostics []struct {
 		Message  string `json:"message"`
 		Location struct {

@@ -27,17 +27,7 @@ For other installation methods, see the [releases page](https://github.com/Hikar
 The CLI reads JSON input and converts it to reviewdog format:
 
 ```bash
-# From stdin
 echo '{"file_path":"main.go","lm_after":"fixed code","message":"Fix typo"}' | lm-suggester
-
-# From file
-lm-suggester -i suggestion.json
-
-# To file
-lm-suggester -i suggestion.json -o reviewdog.json
-
-# Pretty print
-lm-suggester -i suggestion.json -p
 ```
 
 ### Input/Output Format

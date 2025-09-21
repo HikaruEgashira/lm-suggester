@@ -24,6 +24,12 @@ profile.cov
 go.work
 go.work.sum
 
+# CLI binary
+reviewdog-converter
+
+# Build artifacts
+dist/
+
 # env file
 .env
 

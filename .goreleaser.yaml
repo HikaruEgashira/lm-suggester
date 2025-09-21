@@ -7,7 +7,16 @@ before:
 builds:
   - skip: true
 
-# No archives for library-only release
+source:
+  enabled: true
+  name_template: '{{ .ProjectName }}_{{ .Version }}_source'
+  format: 'tar.gz'
+
+archives:
+  - format: tar.gz
+    name_template: '{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}'
+    files:
+      - none*
 
 checksum:
   name_template: 'checksums.txt'

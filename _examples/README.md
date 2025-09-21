@@ -20,7 +20,7 @@ Handles UTF-8 multibyte characters correctly when translating Japanese comments.
 Demonstrates replacing multiple lines with a simplified version.
 
 ### 4. Full File Update (`full_file_update.json`)
-Shows diff calculation when LLMBefore is not provided (full file replacement).
+Shows diff calculation when LMBefore is not provided (full file replacement).
 
 ### 5. Emoji in Code (`emoji_in_code.json`)
 Tests proper handling of emoji characters in code.

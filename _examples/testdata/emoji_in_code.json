@@ -1,7 +1,7 @@
 {
   "FilePath": "emoji_handler.py",
   "BaseText": "# Status codes\nSUCCESS = \"✅ Operation completed\"\nERROR = \"❌ Operation failed\"\nWARNING = \"⚠️ Check required\"\n",
-  "LLMBefore": "ERROR = \"❌ Operation failed\"\n",
-  "LLMAfter": "ERROR = \"🚨 Critical failure detected\"\n",
+  "LMBefore": "ERROR = \"❌ Operation failed\"\n",
+  "LMAfter": "ERROR = \"🚨 Critical failure detected\"\n",
   "Message": "Update error message with more prominent emoji"
 }

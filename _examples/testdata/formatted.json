@@ -1,0 +1,9 @@
+{
+  "FilePath": "main.go",
+  "BaseText": "package main\n\nfunc main() {\n\tprintln(\"hello\")\n}\n",
+  "LMBefore": "\tprintln(\"hello\")\n",
+  "LMAfter": "\tfmt.Println(\"Hello, World!\")\n",
+  "Message": "Use fmt.Println for proper formatting",
+  "Severity": "WARNING",
+  "SourceName": "lm-formatter"
+}

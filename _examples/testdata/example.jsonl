@@ -1,0 +1,3 @@
+{"FilePath": "main.go", "BaseText": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tprintln(\"hello\")\n}\n", "LMBefore": "\tprintln(\"hello\")", "LMAfter": "\tfmt.Println(\"Hello, World!\")", "Message": "Use fmt.Println for proper formatting", "Severity": "WARNING"}
+{"FilePath": "main.go", "BaseText": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tprintln(\"hello\")\n}\n", "LMBefore": "import \"fmt\"", "LMAfter": "import (\n\t\"fmt\"\n\t\"log\"\n)", "Message": "Add log package import", "Severity": "INFO"}
+{"FilePath": "utils.go", "BaseText": "package main\n\nfunc add(a, b int) int {\n\treturn a + b\n}\n", "LMBefore": "func add(a, b int) int", "LMAfter": "func Add(a, b int) int", "Message": "Export function by capitalizing name", "Severity": "INFO"}

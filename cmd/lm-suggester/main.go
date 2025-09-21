@@ -29,13 +29,17 @@ func main() {
 		reporter    string
 		filterMode  string
 		failOnError bool
+		jsonl       bool
+		autoDetect  bool
 	)
 
 	rootCmd := &cobra.Command{
 		Use:   "lm-suggester",
 		Short: "Convert LLM suggestions to reviewdog JSON format",
 		Long: `lm-suggester transforms suggestions from LLMs and other external tools
-into reviewdog-compatible JSON format for code review automation.`,
+into reviewdog-compatible JSON format for code review automation.
+
+Supports both single JSON and JSONL (JSON Lines) formats.`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			var input io.Reader = os.Stdin
 			if inputFile != "" {
@@ -52,10 +56,26 @@ into reviewdog-compatible JSON format for code review automation.`,
 				return fmt.Errorf("failed to read input: %w", err)
 			}
 
-			// Use passthrough conversion with ConvertJSON
-			rdJSON, err := suggester.ConvertJSON(data, "reviewdog")
-			if err != nil {
-				return fmt.Errorf("failed to convert to reviewdog JSON: %w", err)
+			// Determine conversion method
+			var rdJSON []byte
+			if jsonl {
+				// Explicitly use JSONL conversion
+				rdJSON, err = suggester.ConvertJSONL(data, "reviewdog")
+				if err != nil {
+					return fmt.Errorf("failed to convert JSONL to reviewdog JSON: %w", err)
+				}
+			} else if autoDetect {
+				// Auto-detect format
+				rdJSON, err = suggester.ConvertAuto(data, "reviewdog")
+				if err != nil {
+					return fmt.Errorf("failed to convert to reviewdog JSON: %w", err)
+				}
+			} else {
+				// Default to single JSON conversion
+				rdJSON, err = suggester.ConvertJSON(data, "reviewdog")
+				if err != nil {
+					return fmt.Errorf("failed to convert to reviewdog JSON: %w", err)
+				}
 			}
 
 			var output []byte
@@ -97,6 +117,8 @@ into reviewdog-compatible JSON format for code review automation.`,
 	rootCmd.Flags().StringVar(&reporter, "reporter", "local", "reviewdog reporter (local, github-pr-review, github-pr-check, etc.)")
 	rootCmd.Flags().StringVar(&filterMode, "filter-mode", "nofilter", "reviewdog filter mode (added, diff_context, file, nofilter)")
 	rootCmd.Flags().BoolVar(&failOnError, "fail-on-error", false, "Exit with non-zero code when reviewdog finds errors")
+	rootCmd.Flags().BoolVar(&jsonl, "jsonl", false, "Input is in JSONL (JSON Lines) format")
+	rootCmd.Flags().BoolVar(&autoDetect, "auto", false, "Auto-detect input format (JSON or JSONL)")
 
 	versionCmd := &cobra.Command{
 		Use:   "version",

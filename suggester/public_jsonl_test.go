@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func TestdetectJSONL(t *testing.T) {
+func TestDetectJSONL(t *testing.T) {
 	tests := []struct {
 		name     string
 		input    string
@@ -66,7 +66,7 @@ not json
 	}
 }
 
-func TestconvertJSONL(t *testing.T) {
+func TestConvertJSONL(t *testing.T) {
 	jsonl := `{"FilePath": "main.go", "BaseText": "package main\n\nfunc main() {\n\tprintln(\"hello\")\n}\n", "LMBefore": "\tprintln(\"hello\")", "LMAfter": "\tfmt.Println(\"Hello\")", "Message": "Use fmt.Println"}
 {"FilePath": "test.go", "BaseText": "package main\n\nfunc test() {\n\treturn\n}\n", "LMBefore": "func test()", "LMAfter": "func Test()", "Message": "Export function"}`
 

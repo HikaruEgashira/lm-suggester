@@ -83,17 +83,24 @@ func buildRDJSONLegacy(in Input) ([]byte, error) {
 	return marshalRDJSON(in.SourceName, in.FilePath, msg, startLine, startCol, endLine, endCol, in.Severity)
 }
 
-// ConvertToFormat converts input to a specific format using predefined configurations.
-// Supported formats: "reviewdog", "sarif", "eslint"
+// ConvertToFormat converts input to a specific format using pure passthrough.
+// Supported formats: "reviewdog", "sarif", and any custom format (passthrough with computed fields)
 func ConvertToFormat(in Input, format string) ([]byte, error) {
 	if in.LMAfter == "" {
 		return nil, ErrEmptyAfter
 	}
 
-	return ConvertWithFormat(in, format)
+	// Convert Input to JSON for passthrough processing
+	inputJSON, err := ConvertInputToJSON(in)
+	if err != nil {
+		return nil, err
+	}
+
+	return PassthroughConvert(inputJSON, format)
 }
 
 // ConvertWithCustomConfig converts input using a custom configuration.
+// DEPRECATED: Use ConvertToFormat or ConvertJSON for pure passthrough
 func ConvertWithCustomConfig(in Input, config []byte) ([]byte, error) {
 	if in.LMAfter == "" {
 		return nil, ErrEmptyAfter
@@ -105,4 +112,10 @@ func ConvertWithCustomConfig(in Input, config []byte) ([]byte, error) {
 	}
 
 	return Convert(in, cfg)
+}
+
+// ConvertJSON performs pure passthrough JSON transformation.
+// Takes arbitrary JSON input, computes positions for LM fields, and passes everything else through.
+func ConvertJSON(inputJSON []byte, format string) ([]byte, error) {
+	return PassthroughConvert(inputJSON, format)
 }

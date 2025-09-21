@@ -40,8 +40,8 @@ func TestWithBefore_SingleLine(t *testing.T) {
 	in := Input{
 		FilePath:  "main.go",
 		BaseText:  "a\nb\nc\n",
-		LLMBefore: "b\n",
-		LLMAfter:  "B!\n",
+		LMBefore: "b\n",
+		LMAfter:  "B!\n",
 	}
 	out, err := BuildRDJSON(in)
 	if err != nil {
@@ -63,8 +63,8 @@ func TestWithBefore_MultiLine(t *testing.T) {
 	in := Input{
 		FilePath:  "f.txt",
 		BaseText:  "x\ny\nz\n",
-		LLMBefore: "y\nz\n",
-		LLMAfter:  "Y\nZ\n",
+		LMBefore: "y\nz\n",
+		LMAfter:  "Y\nZ\n",
 	}
 	out, err := BuildRDJSON(in)
 	if err != nil {
@@ -82,7 +82,7 @@ func TestNoBefore_FullAfterDiff(t *testing.T) {
 	in := Input{
 		FilePath: "f.txt",
 		BaseText: "a\nb\nc\n",
-		LLMAfter: "a\nB!\nc\n",
+		LMAfter: "a\nB!\nc\n",
 	}
 	out, err := BuildRDJSON(in)
 	if err != nil {
@@ -103,8 +103,8 @@ func TestCRLF_Normalize(t *testing.T) {
 	in := Input{
 		FilePath:  "f.txt",
 		BaseText:  "a\r\nb\r\nc\r\n",
-		LLMBefore: "b\r\n",
-		LLMAfter:  "B!\r\n",
+		LMBefore: "b\r\n",
+		LMAfter:  "B!\r\n",
 	}
 	out, err := BuildRDJSON(in)
 	if err != nil {
@@ -123,8 +123,8 @@ func TestDuplicate_FirstMatchPreferred(t *testing.T) {
 	in := Input{
 		FilePath:  "f.txt",
 		BaseText:  "foo\nbar\nbar\n",
-		LLMBefore: "bar\n",
-		LLMAfter:  "BAR\n",
+		LMBefore: "bar\n",
+		LMAfter:  "BAR\n",
 	}
 	out, err := BuildRDJSON(in)
 	if err != nil {
@@ -140,8 +140,8 @@ func TestEmptyAfter_Error(t *testing.T) {
 	in := Input{
 		FilePath:  "f.txt",
 		BaseText:  "x\n",
-		LLMBefore: "x\n",
-		LLMAfter:  "",
+		LMBefore: "x\n",
+		LMAfter:  "",
 	}
 	_, err := BuildRDJSON(in)
 	if err == nil || err != ErrEmptyAfter {
@@ -153,8 +153,8 @@ func TestUTF8_Japanese(t *testing.T) {
 	in := Input{
 		FilePath:  "main.go",
 		BaseText:  "package main\n// こんにちは世界\nfunc main() {}\n",
-		LLMBefore: "// こんにちは世界\n",
-		LLMAfter:  "// Hello, World!\n",
+		LMBefore: "// こんにちは世界\n",
+		LMAfter:  "// Hello, World!\n",
 	}
 	out, err := BuildRDJSON(in)
 	if err != nil {
@@ -176,8 +176,8 @@ func TestUTF8_ChineseEmoji(t *testing.T) {
 	in := Input{
 		FilePath:  "test.txt",
 		BaseText:  "第一行\n需要修改的行 🚀\n第三行\n",
-		LLMBefore: "需要修改的行 🚀\n",
-		LLMAfter:  "已修改的行 ✅\n",
+		LMBefore: "需要修改的行 🚀\n",
+		LMAfter:  "已修改的行 ✅\n",
 	}
 	out, err := BuildRDJSON(in)
 	if err != nil {
@@ -199,8 +199,8 @@ func TestUTF8_MixedContent(t *testing.T) {
 	in := Input{
 		FilePath:  "mixed.go",
 		BaseText:  "// English comment\n// 日本語コメント\n// 中文注释\n// Emoji 🎉\n",
-		LLMBefore: "// 日本語コメント\n",
-		LLMAfter:  "// Japanese comment\n",
+		LMBefore: "// 日本語コメント\n",
+		LMAfter:  "// Japanese comment\n",
 	}
 	out, err := BuildRDJSON(in)
 	if err != nil {
@@ -216,7 +216,7 @@ func TestUTF8_NoBefore_FullAfter(t *testing.T) {
 	in := Input{
 		FilePath: "unicode.txt",
 		BaseText: "こんにちは\n世界\nWorld\n",
-		LLMAfter: "こんにちは\nせかい\nWorld\n",
+		LMAfter: "こんにちは\nせかい\nWorld\n",
 	}
 	out, err := BuildRDJSON(in)
 	if err != nil {

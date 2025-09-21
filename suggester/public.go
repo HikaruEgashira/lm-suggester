@@ -3,21 +3,21 @@ package suggester
 type Input struct {
 	FilePath   string
 	BaseText   string
-	LLMBefore  string
-	LLMAfter   string
+	LMBefore  string
+	LMAfter   string
 	Message    string
 	Severity   string
 	SourceName string
 }
 
 func BuildRDJSON(in Input) ([]byte, error) {
-	if in.LLMAfter == "" {
+	if in.LMAfter == "" {
 		return nil, ErrEmptyAfter
 	}
 
 	base := normalizeText(in.BaseText)
-	before := normalizeText(in.LLMBefore)
-	after := normalizeText(in.LLMAfter)
+	before := normalizeText(in.LMBefore)
+	after := normalizeText(in.LMAfter)
 
 	var (
 		start, end int

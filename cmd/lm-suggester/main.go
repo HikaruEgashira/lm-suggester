@@ -21,16 +21,16 @@ var (
 type CLIInput struct {
 	FilePath   string `json:"file_path,omitempty"`
 	BaseText   string `json:"base_text,omitempty"`
-	LLMBefore  string `json:"llm_before,omitempty"`
-	LLMAfter   string `json:"llm_after,omitempty"`
+	LMBefore  string `json:"lm_before,omitempty"`
+	LMAfter   string `json:"lm_after,omitempty"`
 	Message    string `json:"message,omitempty"`
 	Severity   string `json:"severity,omitempty"`
 	SourceName string `json:"source_name,omitempty"`
 	// Support both camelCase and snake_case for compatibility
 	FilePathCamel   string `json:"FilePath,omitempty"`
 	BaseTextCamel   string `json:"BaseText,omitempty"`
-	LLMBeforeCamel  string `json:"LLMBefore,omitempty"`
-	LLMAfterCamel   string `json:"LLMAfter,omitempty"`
+	LMBeforeCamel  string `json:"LMBefore,omitempty"`
+	LMAfterCamel   string `json:"LMAfter,omitempty"`
 	MessageCamel    string `json:"Message,omitempty"`
 	SeverityCamel   string `json:"Severity,omitempty"`
 	SourceNameCamel string `json:"SourceName,omitempty"`
@@ -76,11 +76,11 @@ into reviewdog-compatible JSON format for code review automation.`,
 			if cliInput.BaseText == "" && cliInput.BaseTextCamel != "" {
 				cliInput.BaseText = cliInput.BaseTextCamel
 			}
-			if cliInput.LLMBefore == "" && cliInput.LLMBeforeCamel != "" {
-				cliInput.LLMBefore = cliInput.LLMBeforeCamel
+			if cliInput.LMBefore == "" && cliInput.LMBeforeCamel != "" {
+				cliInput.LMBefore = cliInput.LMBeforeCamel
 			}
-			if cliInput.LLMAfter == "" && cliInput.LLMAfterCamel != "" {
-				cliInput.LLMAfter = cliInput.LLMAfterCamel
+			if cliInput.LMAfter == "" && cliInput.LMAfterCamel != "" {
+				cliInput.LMAfter = cliInput.LMAfterCamel
 			}
 			if cliInput.Message == "" && cliInput.MessageCamel != "" {
 				cliInput.Message = cliInput.MessageCamel
@@ -115,8 +115,8 @@ into reviewdog-compatible JSON format for code review automation.`,
 			suggesterInput := suggester.Input{
 				FilePath:   cliInput.FilePath,
 				BaseText:   cliInput.BaseText,
-				LLMBefore:  cliInput.LLMBefore,
-				LLMAfter:   cliInput.LLMAfter,
+				LMBefore:  cliInput.LMBefore,
+				LMAfter:   cliInput.LMAfter,
 				Message:    cliInput.Message,
 				Severity:   cliInput.Severity,
 				SourceName: cliInput.SourceName,

@@ -9,15 +9,18 @@ Convert LLM suggestions and external tool outputs to [reviewdog](https://github.
 Agentic PR review prompt
 
 ```
-Analyze the code and generate suggestions in this format (one per line, not an array)
-{"file_path":"path/to/file","base_text":"<full file content>","lm_before":"<exact match>","lm_after":"<replacement>","message":"<reason>"}
+Review provided Pull Request.
+1. Checkout code
+gh pr checkout 123
 
-Requirements
+2. Analyze the code and generate suggestions in this format
+{"file_path":"path/to/file","lm_before":"<exact match>","lm_after":"<replacement>","message":"<reason>"}
+
+Requirements:
 - lm_before must match exactly (including whitespace)
-- Include complete base_text for line number calculation
-- Each suggestion as separate JSON object
+- JSONL format also supported
 
-Then execute this pipeline
+3. Execute this pipeline
 echo '<your suggestions here>' | lm-suggester | CI_REPO_OWNER=owner CI_REPO_NAME=repo CI_PULL_REQUEST=123 CI_COMMIT=$(gh pr view 123 -q .headRefOid) REVIEWDOG_GITHUB_API_TOKEN=$(gh auth token) reviewdog -f=rdjson -reporter=github-pr-review
 ```
 

@@ -12,9 +12,9 @@ func TestPassthroughConvert(t *testing.T) {
 		name           string
 		input          string
 		format         string
-		checkFields    map[string]interface{} // Fields that must exist
-		checkNotExists []string               // Fields that should not exist at top level
-		extraFields    map[string]interface{} // Extra fields that should pass through
+		checkFields    map[string]interface{}
+		checkNotExists []string
+		extraFields    map[string]interface{}
 	}{
 		{
 			name: "reviewdog format with passthrough",
@@ -34,11 +34,11 @@ func TestPassthroughConvert(t *testing.T) {
 			}`,
 			format: "reviewdog",
 			checkFields: map[string]interface{}{
-				"source.name":                     "test-linter",
-				"diagnostics[0].severity":         "WARNING",
-				"diagnostics[0].location.path":    "test.go",
+				"source.name":                              "test-linter",
+				"diagnostics[0].severity":                  "WARNING",
+				"diagnostics[0].location.path":             "test.go",
 				"diagnostics[0].location.range.start.line": 2.0, // JSON numbers are float64
-				"customField": "custom value",
+				"customField":                              "custom value",
 			},
 			checkNotExists: []string{"FilePath", "BaseText", "LMBefore", "LMAfter"},
 			extraFields: map[string]interface{}{
@@ -61,7 +61,7 @@ func TestPassthroughConvert(t *testing.T) {
 			}`,
 			format: "sarif",
 			checkFields: map[string]interface{}{
-				"version": "2.1.0",
+				"version":                  "2.1.0",
 				"runs[0].tool.driver.name": "eslint",
 				"runs[0].results[0].level": "error",
 				"runs[0].results[0].locations[0].physicalLocation.region.startLine": 2.0,
@@ -105,7 +105,6 @@ func TestPassthroughConvert(t *testing.T) {
 				t.Fatalf("Failed to parse result JSON: %v", err)
 			}
 
-			// Check required fields exist
 			for path, expected := range tt.checkFields {
 				actual := getNestedValue(output, path)
 				if actual != expected {
@@ -113,14 +112,12 @@ func TestPassthroughConvert(t *testing.T) {
 				}
 			}
 
-			// Check fields that should not exist
 			for _, field := range tt.checkNotExists {
 				if _, exists := output[field]; exists {
 					t.Errorf("Field %s should not exist at top level after transformation", field)
 				}
 			}
 
-			// Check extra fields passed through
 			for path, expected := range tt.extraFields {
 				actual := getNestedValue(output, path)
 				if actual != expected {
@@ -132,7 +129,6 @@ func TestPassthroughConvert(t *testing.T) {
 }
 
 func TestPassthroughWithArbitraryJSON(t *testing.T) {
-	// Test with completely arbitrary JSON structure
 	input := `{
 		"FilePath": "test.go",
 		"BaseText": "package main\n\nfunc main() {}\n",
@@ -166,21 +162,19 @@ func TestPassthroughWithArbitraryJSON(t *testing.T) {
 		t.Fatalf("Failed to parse result JSON: %v", err)
 	}
 
-	// Check computed fields
 	if getNestedValue(output, "diagnostics[0].location.range.start.line") != 3.0 {
 		t.Error("Computed position incorrect")
 	}
 
-	// Check passthrough of complex structures
 	passthroughChecks := map[string]interface{}{
-		"customTool.name":           "my-linter",
-		"customTool.version":        "2.0.0",
+		"customTool.name":            "my-linter",
+		"customTool.version":         "2.0.0",
 		"customTool.config.severity": "error",
-		"buildInfo.commit":          "abc123",
-		"buildInfo.branch":          "main",
-		"buildInfo.timestamp":       1234567890.0,
-		"score":                     95.5,
-		"enabled":                   true,
+		"buildInfo.commit":           "abc123",
+		"buildInfo.branch":           "main",
+		"buildInfo.timestamp":        1234567890.0,
+		"score":                      95.5,
+		"enabled":                    true,
 	}
 
 	for path, expected := range passthroughChecks {
@@ -191,7 +185,6 @@ func TestPassthroughWithArbitraryJSON(t *testing.T) {
 		}
 	}
 
-	// Check array passthrough
 	tags, ok := output["tags"].([]interface{})
 	if !ok || len(tags) != 3 {
 		t.Error("Tags array not passed through correctly")
@@ -199,13 +192,12 @@ func TestPassthroughWithArbitraryJSON(t *testing.T) {
 }
 
 func TestConvert_DirectAPI(t *testing.T) {
-	// Test the direct JSON API
 	input := map[string]interface{}{
-		"FilePath":    "main.go",
-		"BaseText":    "package main\n",
-		"LMAfter":     "package main\n\nimport \"fmt\"\n",
-		"Message":     "Add import",
-		"customData":  "preserved",
+		"FilePath":   "main.go",
+		"BaseText":   "package main\n",
+		"LMAfter":    "package main\n\nimport \"fmt\"\n",
+		"Message":    "Add import",
+		"customData": "preserved",
 	}
 
 	inputJSON, err := json.Marshal(input)
@@ -223,24 +215,20 @@ func TestConvert_DirectAPI(t *testing.T) {
 		t.Fatalf("Failed to parse result: %v", err)
 	}
 
-	// Verify custom data is preserved
 	if output["customData"] != "preserved" {
 		t.Error("Custom data not preserved in passthrough")
 	}
 
-	// Verify computed fields exist
 	if getNestedValue(output, "diagnostics[0].location.range.start.line") == nil {
 		t.Error("Computed fields not added")
 	}
 }
 
-// Helper function to get nested values using dot notation
 func getNestedValue(data map[string]interface{}, path string) interface{} {
 	parts := strings.Split(path, ".")
 	current := interface{}(data)
 
 	for _, part := range parts {
-		// Handle array notation
 		if idx := strings.Index(part, "["); idx >= 0 {
 			fieldName := part[:idx]
 			endIdx := strings.Index(part, "]")
@@ -250,7 +238,6 @@ func getNestedValue(data map[string]interface{}, path string) interface{} {
 				index = i
 			}
 
-			// Access field if present
 			if fieldName != "" {
 				if m, ok := current.(map[string]interface{}); ok {
 					current = m[fieldName]
@@ -259,14 +246,12 @@ func getNestedValue(data map[string]interface{}, path string) interface{} {
 				}
 			}
 
-			// Access array index
 			if arr, ok := current.([]interface{}); ok && index < len(arr) {
 				current = arr[index]
 			} else {
 				return nil
 			}
 		} else {
-			// Simple field access
 			if m, ok := current.(map[string]interface{}); ok {
 				current = m[part]
 			} else {

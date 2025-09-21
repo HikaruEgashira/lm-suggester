@@ -54,7 +54,6 @@ Automatically detects and supports both single JSON and JSONL (JSON Lines) forma
 				return fmt.Errorf("failed to read input: %w", err)
 			}
 
-			// Convert (auto-detects JSON/JSONL)
 			rdJSON, err := suggester.Convert(data, "reviewdog")
 			if err != nil {
 				return fmt.Errorf("failed to convert to reviewdog JSON: %w", err)

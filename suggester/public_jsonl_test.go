@@ -75,13 +75,11 @@ func TestconvertJSONL(t *testing.T) {
 		t.Fatalf("convertJSONL() error = %v", err)
 	}
 
-	// Parse result to verify structure
 	var output map[string]interface{}
 	if err := json.Unmarshal(result, &output); err != nil {
 		t.Fatalf("Failed to parse output: %v", err)
 	}
 
-	// Check that diagnostics were merged
 	diagnostics, ok := output["diagnostics"].([]interface{})
 	if !ok {
 		t.Fatal("No diagnostics in output")
@@ -91,7 +89,6 @@ func TestconvertJSONL(t *testing.T) {
 		t.Errorf("Expected 2 diagnostics, got %d", len(diagnostics))
 	}
 
-	// Check source exists
 	if _, ok := output["source"]; !ok {
 		t.Error("No source in output")
 	}
@@ -125,15 +122,12 @@ func TestConvert(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			result, err := Convert([]byte(tt.input), "reviewdog")
 			if err != nil {
-				// For this test, we're checking both regular JSON and JSONL inputs
-				// Some might fail due to missing fields, but that's expected
 				if !strings.Contains(err.Error(), "LMAfter") && !strings.Contains(err.Error(), "BaseText") {
 					t.Errorf("Convert() unexpected error = %v", err)
 				}
 				return
 			}
 
-			// Just verify it produces valid JSON
 			var output interface{}
 			if err := json.Unmarshal(result, &output); err != nil {
 				t.Errorf("Convert() produced invalid JSON: %v", err)

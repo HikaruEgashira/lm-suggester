@@ -239,7 +239,6 @@ func TestUTF8_NoBefore_FullAfter(t *testing.T) {
 		t.Fatalf("suggestion not found:\n%s", string(out))
 	}
 	rd := mustParse(t, out)
-	// Should replace "世界\n" with "せかい\n" (line 2)
 	if rd.Diagnostics[0].Location.Range.Start.Line != 2 || rd.Diagnostics[0].Location.Range.End.Line != 2 {
 		t.Fatalf("range lines got %d..%d, want 2..2",
 			rd.Diagnostics[0].Location.Range.Start.Line,

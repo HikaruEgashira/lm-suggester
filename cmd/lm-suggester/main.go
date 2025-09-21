@@ -170,7 +170,7 @@ into reviewdog-compatible JSON format for code review automation.`,
 	rootCmd.Flags().BoolVarP(&pretty, "pretty", "p", false, "Pretty-print JSON output")
 	rootCmd.Flags().BoolVar(&reviewdog, "reviewdog", false, "Run reviewdog with the output")
 	rootCmd.Flags().StringVar(&reporter, "reporter", "local", "reviewdog reporter (local, github-pr-review, github-pr-check, etc.)")
-	rootCmd.Flags().StringVar(&filterMode, "filter-mode", "added", "reviewdog filter mode (added, diff_context, file, nofilter)")
+	rootCmd.Flags().StringVar(&filterMode, "filter-mode", "nofilter", "reviewdog filter mode (added, diff_context, file, nofilter)")
 	rootCmd.Flags().BoolVar(&failOnError, "fail-on-error", false, "Exit with non-zero code when reviewdog finds errors")
 
 	versionCmd := &cobra.Command{

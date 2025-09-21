@@ -192,7 +192,7 @@ Flags:
   -p, --pretty               Pretty-print JSON output
       --reviewdog            Run reviewdog with the output
       --reporter string      reviewdog reporter (default: local)
-      --filter-mode string   reviewdog filter mode (default: added)
+      --filter-mode string   reviewdog filter mode (default: nofilter)
       --fail-on-error        Exit with non-zero code when reviewdog finds errors
   -h, --help                 Help for lm-suggester
       --version              Version information

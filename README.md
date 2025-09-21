@@ -26,7 +26,7 @@ The CLI reads JSON input and converts it to reviewdog format:
 
 ```bash
 # From stdin
-echo '{"file_path":"main.go","llm_after":"fixed code","message":"Fix typo"}' | lm-suggester
+echo '{"file_path":"main.go","lm_after":"fixed code","message":"Fix typo"}' | lm-suggester
 
 # From file
 lm-suggester -i suggestion.json
@@ -46,8 +46,8 @@ The CLI expects JSON input with the following structure:
 {
   "file_path": "path/to/file.go",
   "base_text": "original file content",
-  "llm_before": "old code",
-  "llm_after": "new code",
+  "lm_before": "old code",
+  "lm_after": "new code",
   "message": "Description of the change",
   "severity": "INFO",
   "source_name": "my-linter"
@@ -57,10 +57,10 @@ The CLI expects JSON input with the following structure:
 #### Fields
 
 - `file_path` (required): Path to the target file
-- `llm_after` (required): The suggested replacement text
+- `lm_after` (required): The suggested replacement text
 - `message` (required): Description of the suggestion
 - `base_text` (optional): Original file content. If not provided, reads from `file_path`
-- `llm_before` (optional): Text to be replaced. If not provided, computes minimal diff automatically
+- `lm_before` (optional): Text to be replaced. If not provided, computes minimal diff automatically
 - `severity` (optional): Severity level (INFO, WARNING, ERROR). Default: INFO
 - `source_name` (optional): Name of the tool. Default: lm-suggester
 
@@ -84,7 +84,7 @@ lm-suggester -i suggestion.json | reviewdog -f=rdjson -reporter=github-pr-check
 cat <<EOF | lm-suggester
 {
   "file_path": "main.go",
-  "llm_after": "fmt.Println(\"Hello, World!\")",
+  "lm_after": "fmt.Println(\"Hello, World!\")",
   "message": "Use fmt.Println instead of print"
 }
 EOF
@@ -96,8 +96,8 @@ EOF
 cat <<EOF | lm-suggester -p
 {
   "file_path": "utils/helper.go",
-  "llm_before": "// TODO: implement this",
-  "llm_after": "// parseConfig reads the configuration file",
+  "lm_before": "// TODO: implement this",
+  "lm_after": "// parseConfig reads the configuration file",
   "message": "Add proper documentation",
   "severity": "WARNING",
   "source_name": "doc-linter"
@@ -147,7 +147,7 @@ import "github.com/HikaruEgashira/lm-suggester/suggester"
 
 input := suggester.Input{
     FilePath:  "main.go",
-    LLMAfter:  "improved code",
+    LMAfter:  "improved code",
     Message:   "Optimization suggestion",
 }
 

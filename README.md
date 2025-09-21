@@ -8,12 +8,6 @@ Convert LLM suggestions and external tool outputs to [reviewdog](https://github.
 
 ## Installation
 
-### Go Install
-
-```bash
-go install github.com/HikaruEgashira/lm-suggester/cmd/lm-suggester@latest
-```
-
 ### Using lm-suggester cli
 
 ```bash

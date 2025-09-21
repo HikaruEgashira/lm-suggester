@@ -1,0 +1,52 @@
+{
+  "diagnostics": [
+    {
+      "location": {
+        "path": "_examples/demo/main.go",
+        "range": {
+          "end": {
+            "column": 3,
+            "line": 17
+          },
+          "start": {
+            "column": 1,
+            "line": 15
+          }
+        }
+      },
+      "message": "Replace code with suggestion\n```suggestion\n\tif err != nil {\n\t\tfmt.Fprintf(os.Stderr, \"Error reading input: %v\\n\", err)\n\t\tos.Exit(1)\n\t}\n```"
+    },
+    {
+      "location": {
+        "path": "_examples/demo/main.go",
+        "range": {
+          "end": {
+            "column": 24,
+            "line": 21
+          },
+          "start": {
+            "column": 1,
+            "line": 21
+          }
+        }
+      },
+      "message": "Replace code with suggestion\n```suggestion\n\tif err := json.Unmarshal(b, &in); err != nil {\n\t\tfmt.Fprintf(os.Stderr, \"Error parsing JSON: %v\\n\", err)\n\t\tos.Exit(1)\n\t}\n```"
+    },
+    {
+      "location": {
+        "path": "_examples/demo/main.go",
+        "range": {
+          "end": {
+            "column": 37,
+            "line": 24
+          },
+          "start": {
+            "column": 1,
+            "line": 24
+          }
+        }
+      },
+      "message": "Replace code with suggestion\n```suggestion\n\tout, err := suggester.BuildRDJSON(in)\n\tif err != nil {\n\t\tfmt.Fprintf(os.Stderr, \"Error building reviewdog JSON: %v\\n\", err)\n\t\tos.Exit(1)\n\t}\n```"
+    }
+  ]
+}

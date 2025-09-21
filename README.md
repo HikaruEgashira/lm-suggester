@@ -82,69 +82,65 @@ lm-suggester -i suggestion.json -p
 }
 ```
 
-### SARIF Format Conversion
+### SARIF-like Format Support
 
-Convert to SARIF format via reviewdog:
+lm-suggester supports pass-through of SARIF-like structures. You can add SARIF properties alongside the required fields, and they will be preserved in the output:
 
-```bash
-lm-suggester -i suggestion.json | reviewdog -f=rdjson -reporter=sarif
-```
-
-#### SARIF Output Example
+#### Input with SARIF-like structure
 
 ```json
 {
-  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
-  "version": "2.1.0",
-  "runs": [
+  "file_path": "main.go",
+  "lm_after": "fmt.Println(\"Hello, World!\")",
+  "message": "Use fmt.Println instead of print",
+  "ruleId": "go/print-style",
+  "level": "warning",
+  "properties": {
+    "tags": ["style", "best-practice"],
+    "category": "code-quality"
+  }
+}
+```
+
+#### Output (reviewdog JSON with SARIF properties)
+
+```json
+{
+  "diagnostics": [
     {
-      "tool": {
-        "driver": {
-          "name": "lm-suggester"
+      "message": "Use fmt.Println instead of print",
+      "location": {
+        "path": "main.go",
+        "range": {
+          "start": {"line": 10, "column": 5},
+          "end": {"line": 10, "column": 30}
         }
       },
-      "results": [
+      "severity": "WARNING",
+      "source": {"name": "lm-suggester"},
+      "suggestions": [
         {
-          "message": {"text": "Use fmt.Println instead of print"},
-          "locations": [
-            {
-              "physicalLocation": {
-                "artifactLocation": {"uri": "main.go"},
-                "region": {
-                  "startLine": 10,
-                  "startColumn": 5,
-                  "endLine": 10,
-                  "endColumn": 30
-                }
-              }
-            }
-          ],
-          "fixes": [
-            {
-              "artifactChanges": [
-                {
-                  "artifactLocation": {"uri": "main.go"},
-                  "replacements": [
-                    {
-                      "deletedRegion": {
-                        "startLine": 10,
-                        "startColumn": 5,
-                        "endLine": 10,
-                        "endColumn": 30
-                      },
-                      "insertedContent": {"text": "fmt.Println(\"Hello, World!\")"}
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
+          "range": {
+            "start": {"line": 10, "column": 5},
+            "end": {"line": 10, "column": 30}
+          },
+          "text": "fmt.Println(\"Hello, World!\")"
         }
-      ]
+      ],
+      "original_output": {
+        "ruleId": "go/print-style",
+        "level": "warning",
+        "properties": {
+          "tags": ["style", "best-practice"],
+          "category": "code-quality"
+        }
+      }
     }
   ]
 }
 ```
+
+This pass-through behavior allows integration with SARIF-based tools while maintaining compatibility with reviewdog.
 
 ### Integration with reviewdog
 

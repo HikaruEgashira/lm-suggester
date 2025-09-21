@@ -1,4 +1,4 @@
-reviewdog-converter は LLM などの外部ツールから受け取った提案を reviewdog JSON 形式へ変換するGoライブラリです。
+llm-suggester は LLM などの外部ツールから受け取った提案を reviewdog JSON 形式へ変換するGoライブラリです。
 
 ```bash
 # 依存関係の管理

@@ -1,6 +1,6 @@
-# reviewdog-converter Examples
+# llm-suggester Examples
 
-This directory contains examples demonstrating the usage of the reviewdog-converter library.
+This directory contains examples demonstrating the usage of the llm-suggester library.
 
 ## Usage
 

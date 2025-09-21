@@ -38,15 +38,15 @@ jobs:
         timeout-minutes: 5
 
       - name: Build CLI
-        run: go build -v ./cmd/reviewdog-converter
+        run: go build -v ./cmd/llm-suggester
         timeout-minutes: 5
 
       - name: Test CLI
         run: |
           # Test with example data files
-          cat _examples/testdata/simple_replacement.json | ./reviewdog-converter -p
+          cat _examples/testdata/simple_replacement.json | ./llm-suggester -p
           # Test with file input
-          ./reviewdog-converter -i _examples/testdata/japanese_comment.json
+          ./llm-suggester -i _examples/testdata/japanese_comment.json
           # Test version command
-          ./reviewdog-converter version
+          ./llm-suggester version
         timeout-minutes: 2

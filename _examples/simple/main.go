@@ -6,7 +6,7 @@ import (
 	"io"
 	"os"
 
-	"github.com/HikaruEgashira/reviewdog-converter/suggester"
+	"github.com/HikaruEgashira/llm-suggester/suggester"
 )
 
 func main() {

@@ -1,4 +1,4 @@
-module github.com/HikaruEgashira/reviewdog-converter
+module github.com/HikaruEgashira/llm-suggester
 
 go 1.22
 

@@ -73,15 +73,17 @@ echo '{"file_path":"main.go","lm_after":"fixed code","message":"Fix typo"}' | lm
 }
 ```
 
-### SARIF-like Format Support
+### Pass-through Format Support
 
-lm-suggester supports pass-through of SARIF-like structures. You can add SARIF properties alongside the required fields, and they will be preserved in the output:
+lm-suggester supports pass-through of additional fields. Any extra fields in the input JSON are preserved alongside the computed diagnostics:
 
-#### Input with SARIF-like structure
+#### Input with additional fields
 
 ```json
 {
   "file_path": "main.go",
+  "base_text": "package main\n\nfunc main() {\n\tprint(\"Hello, World!\")\n}",
+  "lm_before": "print(\"Hello, World!\")",
   "lm_after": "fmt.Println(\"Hello, World!\")",
   "message": "Use fmt.Println instead of print",
   "ruleId": "go/print-style",
@@ -93,45 +95,40 @@ lm-suggester supports pass-through of SARIF-like structures. You can add SARIF p
 }
 ```
 
-#### Output (reviewdog JSON with SARIF properties)
+#### Output (merged fields with diagnostics)
 
 ```json
 {
+  "file_path": "main.go",
+  "base_text": "package main\n\nfunc main() {\n\tprint(\"Hello, World!\")\n}",
+  "lm_before": "print(\"Hello, World!\")",
+  "lm_after": "fmt.Println(\"Hello, World!\")",
+  "message": "Use fmt.Println instead of print",
+  "ruleId": "go/print-style",
+  "level": "warning",
+  "properties": {
+    "tags": ["style", "best-practice"],
+    "category": "code-quality"
+  },
   "diagnostics": [
     {
-      "message": "Use fmt.Println instead of print",
+      "message": "Replace code with suggestion\n```suggestion\nfmt.Println(\"Hello, World!\")\n```",
       "location": {
         "path": "main.go",
         "range": {
-          "start": {"line": 10, "column": 5},
-          "end": {"line": 10, "column": 30}
-        }
-      },
-      "severity": "WARNING",
-      "source": {"name": "lm-suggester"},
-      "suggestions": [
-        {
-          "range": {
-            "start": {"line": 10, "column": 5},
-            "end": {"line": 10, "column": 30}
-          },
-          "text": "fmt.Println(\"Hello, World!\")"
-        }
-      ],
-      "original_output": {
-        "ruleId": "go/print-style",
-        "level": "warning",
-        "properties": {
-          "tags": ["style", "best-practice"],
-          "category": "code-quality"
+          "start": {"line": 4, "column": 2},
+          "end": {"line": 4, "column": 24}
         }
       }
     }
-  ]
+  ],
+  "source": {
+    "name": "reviewdog-converter"
+  }
 }
 ```
 
-This pass-through behavior allows integration with SARIF-based tools while maintaining compatibility with reviewdog.
+This pass-through behavior preserves all input fields, allowing integration with various tools while maintaining reviewdog compatibility.
 
 ### Integration with reviewdog
 

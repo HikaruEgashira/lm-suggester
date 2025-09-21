@@ -6,6 +6,21 @@
 
 Convert LLM suggestions and external tool outputs to [reviewdog](https://github.com/reviewdog/reviewdog) JSON format for seamless code review automation.
 
+Agentic PR review prompt
+
+```
+Analyze the code and generate suggestions in this format (one per line, not an array):
+{"file_path":"path/to/file","base_text":"<full file content>","lm_before":"<exact match>","lm_after":"<replacement>","message":"<reason>"}
+
+Requirements:
+- lm_before must match exactly (including whitespace)
+- Include complete base_text for line number calculation
+- Each suggestion as separate JSON object
+
+Then execute this pipeline:
+echo '<your suggestions here>' | lm-suggester | CI_REPO_OWNER=owner CI_REPO_NAME=repo CI_PULL_REQUEST=123 CI_COMMIT=$(gh pr view 123 -q .headRefOid) REVIEWDOG_GITHUB_API_TOKEN=$(gh auth token) reviewdog -f=rdjson -reporter=github-pr-review
+```
+
 ## Installation
 
 ### Using lm-suggester cli
@@ -227,23 +242,6 @@ Flags:
 ## License
 
 MIT License - see [LICENSE](LICENSE) file for details.
-
-## LLM Code Review Prompt
-
-Minimal prompt for automated PR review with lm-suggester:
-
-```
-Analyze the code and generate suggestions in this format (one per line, not an array):
-{"file_path":"path/to/file","base_text":"<full file content>","lm_before":"<exact match>","lm_after":"<replacement>","message":"<reason>"}
-
-Requirements:
-- lm_before must match exactly (including whitespace)
-- Include complete base_text for line number calculation
-- Each suggestion as separate JSON object
-
-Then execute this pipeline:
-echo '<your suggestions here>' | lm-suggester | CI_REPO_OWNER=owner CI_REPO_NAME=repo CI_PULL_REQUEST=123 CI_COMMIT=$(gh pr view 123 -q .headRefOid) REVIEWDOG_GITHUB_API_TOKEN=$(gh auth token) reviewdog -f=rdjson -reporter=github-pr-review
-```
 
 ## Related Projects
 

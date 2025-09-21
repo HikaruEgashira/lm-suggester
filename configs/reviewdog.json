@@ -1,0 +1,44 @@
+{
+  "template": {
+    "source": {
+      "name": null
+    },
+    "diagnostics": []
+  },
+  "mappings": [
+    {
+      "target": "$.source.name",
+      "source": "input.SourceName",
+      "default": "reviewdog-converter"
+    },
+    {
+      "target": "$.diagnostics[0].message",
+      "source": "computed.suggestion_message"
+    },
+    {
+      "target": "$.diagnostics[0].location.path",
+      "source": "input.FilePath"
+    },
+    {
+      "target": "$.diagnostics[0].location.range.start.line",
+      "source": "core.StartLine"
+    },
+    {
+      "target": "$.diagnostics[0].location.range.start.column",
+      "source": "core.StartColumn"
+    },
+    {
+      "target": "$.diagnostics[0].location.range.end.line",
+      "source": "core.EndLine"
+    },
+    {
+      "target": "$.diagnostics[0].location.range.end.column",
+      "source": "core.EndColumn"
+    },
+    {
+      "target": "$.diagnostics[0].severity",
+      "source": "input.Severity",
+      "default": "WARNING"
+    }
+  ]
+}

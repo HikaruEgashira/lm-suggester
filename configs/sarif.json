@@ -1,0 +1,83 @@
+{
+  "template": {
+    "version": "2.1.0",
+    "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+    "runs": [
+      {
+        "tool": {
+          "driver": {
+            "name": null,
+            "version": "1.0.0"
+          }
+        },
+        "results": []
+      }
+    ]
+  },
+  "mappings": [
+    {
+      "target": "$.runs[0].tool.driver.name",
+      "source": "input.sourceName",
+      "default": "reviewdog-converter"
+    },
+    {
+      "target": "$.runs[0].results[0].message.text",
+      "source": "input.message",
+      "default": "Code suggestion"
+    },
+    {
+      "target": "$.runs[0].results[0].locations[0].physicalLocation.artifactLocation.uri",
+      "source": "input.filePath"
+    },
+    {
+      "target": "$.runs[0].results[0].locations[0].physicalLocation.region.startLine",
+      "source": "core.StartLine"
+    },
+    {
+      "target": "$.runs[0].results[0].locations[0].physicalLocation.region.startColumn",
+      "source": "core.StartColumn"
+    },
+    {
+      "target": "$.runs[0].results[0].locations[0].physicalLocation.region.endLine",
+      "source": "core.EndLine"
+    },
+    {
+      "target": "$.runs[0].results[0].locations[0].physicalLocation.region.endColumn",
+      "source": "core.EndColumn"
+    },
+    {
+      "target": "$.runs[0].results[0].level",
+      "source": "input.severity",
+      "transform": "to_sarif_level",
+      "default": "warning"
+    },
+    {
+      "target": "$.runs[0].results[0].fixes[0].description.text",
+      "source": "literal.Apply suggested fix"
+    },
+    {
+      "target": "$.runs[0].results[0].fixes[0].artifactChanges[0].artifactLocation.uri",
+      "source": "input.filePath"
+    },
+    {
+      "target": "$.runs[0].results[0].fixes[0].artifactChanges[0].replacements[0].deletedRegion.startLine",
+      "source": "core.StartLine"
+    },
+    {
+      "target": "$.runs[0].results[0].fixes[0].artifactChanges[0].replacements[0].deletedRegion.startColumn",
+      "source": "core.StartColumn"
+    },
+    {
+      "target": "$.runs[0].results[0].fixes[0].artifactChanges[0].replacements[0].deletedRegion.endLine",
+      "source": "core.EndLine"
+    },
+    {
+      "target": "$.runs[0].results[0].fixes[0].artifactChanges[0].replacements[0].deletedRegion.endColumn",
+      "source": "core.EndColumn"
+    },
+    {
+      "target": "$.runs[0].results[0].fixes[0].artifactChanges[0].replacements[0].insertedContent.text",
+      "source": "core.After"
+    }
+  ]
+}

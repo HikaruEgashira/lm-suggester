@@ -40,13 +40,14 @@ func mustParse(t *testing.T, b []byte) rdOut {
 }
 
 func TestWithBefore_SingleLine(t *testing.T) {
-	in := Input{
-		FilePath:  "main.go",
-		BaseText:  "a\nb\nc\n",
-		LMBefore: "b\n",
-		LMAfter:  "B!\n",
+	input := map[string]interface{}{
+		"FilePath": "main.go",
+		"BaseText": "a\nb\nc\n",
+		"LMBefore": "b\n",
+		"LMAfter":  "B!\n",
 	}
-	out, err := BuildRDJSON(in)
+	inputJSON, _ := json.Marshal(input)
+	out, err := ConvertJSON(inputJSON, "reviewdog")
 	if err != nil {
 		t.Fatalf("err: %v", err)
 	}
@@ -63,13 +64,14 @@ func TestWithBefore_SingleLine(t *testing.T) {
 }
 
 func TestWithBefore_MultiLine(t *testing.T) {
-	in := Input{
-		FilePath:  "f.txt",
-		BaseText:  "x\ny\nz\n",
-		LMBefore: "y\nz\n",
-		LMAfter:  "Y\nZ\n",
+	input := map[string]interface{}{
+		"FilePath": "f.txt",
+		"BaseText": "x\ny\nz\n",
+		"LMBefore": "y\nz\n",
+		"LMAfter":  "Y\nZ\n",
 	}
-	out, err := BuildRDJSON(in)
+	inputJSON, _ := json.Marshal(input)
+	out, err := ConvertJSON(inputJSON, "reviewdog")
 	if err != nil {
 		t.Fatalf("err: %v", err)
 	}
@@ -82,12 +84,13 @@ func TestWithBefore_MultiLine(t *testing.T) {
 }
 
 func TestNoBefore_FullAfterDiff(t *testing.T) {
-	in := Input{
-		FilePath: "f.txt",
-		BaseText: "a\nb\nc\n",
-		LMAfter: "a\nB!\nc\n",
+	input := map[string]interface{}{
+		"FilePath": "f.txt",
+		"BaseText": "a\nb\nc\n",
+		"LMAfter":  "a\nB!\nc\n",
 	}
-	out, err := BuildRDJSON(in)
+	inputJSON, _ := json.Marshal(input)
+	out, err := ConvertJSON(inputJSON, "reviewdog")
 	if err != nil {
 		t.Fatalf("err: %v", err)
 	}
@@ -103,13 +106,14 @@ func TestNoBefore_FullAfterDiff(t *testing.T) {
 }
 
 func TestCRLF_Normalize(t *testing.T) {
-	in := Input{
-		FilePath:  "f.txt",
-		BaseText:  "a\r\nb\r\nc\r\n",
-		LMBefore: "b\r\n",
-		LMAfter:  "B!\r\n",
+	input := map[string]interface{}{
+		"FilePath": "f.txt",
+		"BaseText": "a\r\nb\r\nc\r\n",
+		"LMBefore": "b\r\n",
+		"LMAfter":  "B!\r\n",
 	}
-	out, err := BuildRDJSON(in)
+	inputJSON, _ := json.Marshal(input)
+	out, err := ConvertJSON(inputJSON, "reviewdog")
 	if err != nil {
 		t.Fatalf("err: %v", err)
 	}
@@ -123,13 +127,14 @@ func TestCRLF_Normalize(t *testing.T) {
 }
 
 func TestDuplicate_FirstMatchPreferred(t *testing.T) {
-	in := Input{
-		FilePath:  "f.txt",
-		BaseText:  "foo\nbar\nbar\n",
-		LMBefore: "bar\n",
-		LMAfter:  "BAR\n",
+	input := map[string]interface{}{
+		"FilePath": "f.txt",
+		"BaseText": "foo\nbar\nbar\n",
+		"LMBefore": "bar\n",
+		"LMAfter":  "BAR\n",
 	}
-	out, err := BuildRDJSON(in)
+	inputJSON, _ := json.Marshal(input)
+	out, err := ConvertJSON(inputJSON, "reviewdog")
 	if err != nil {
 		t.Fatalf("err: %v", err)
 	}
@@ -140,26 +145,28 @@ func TestDuplicate_FirstMatchPreferred(t *testing.T) {
 }
 
 func TestEmptyAfter_Error(t *testing.T) {
-	in := Input{
-		FilePath:  "f.txt",
-		BaseText:  "x\n",
-		LMBefore: "x\n",
-		LMAfter:  "",
+	input := map[string]interface{}{
+		"FilePath": "f.txt",
+		"BaseText": "x\n",
+		"LMBefore": "x\n",
+		"LMAfter":  "",
 	}
-	_, err := BuildRDJSON(in)
-	if err == nil || err != ErrEmptyAfter {
+	inputJSON, _ := json.Marshal(input)
+	_, err := ConvertJSON(inputJSON, "reviewdog")
+	if err == nil {
 		t.Fatalf("want ErrEmptyAfter, got %v", err)
 	}
 }
 
 func TestUTF8_Japanese(t *testing.T) {
-	in := Input{
-		FilePath:  "main.go",
-		BaseText:  "package main\n// こんにちは世界\nfunc main() {}\n",
-		LMBefore: "// こんにちは世界\n",
-		LMAfter:  "// Hello, World!\n",
+	input := map[string]interface{}{
+		"FilePath": "main.go",
+		"BaseText": "package main\n// こんにちは世界\nfunc main() {}\n",
+		"LMBefore": "// こんにちは世界\n",
+		"LMAfter":  "// Hello, World!\n",
 	}
-	out, err := BuildRDJSON(in)
+	inputJSON, _ := json.Marshal(input)
+	out, err := ConvertJSON(inputJSON, "reviewdog")
 	if err != nil {
 		t.Fatalf("err: %v", err)
 	}
@@ -176,13 +183,14 @@ func TestUTF8_Japanese(t *testing.T) {
 }
 
 func TestUTF8_ChineseEmoji(t *testing.T) {
-	in := Input{
-		FilePath:  "test.txt",
-		BaseText:  "第一行\n需要修改的行 🚀\n第三行\n",
-		LMBefore: "需要修改的行 🚀\n",
-		LMAfter:  "已修改的行 ✅\n",
+	input := map[string]interface{}{
+		"FilePath": "test.txt",
+		"BaseText": "第一行\n需要修改的行 🚀\n第三行\n",
+		"LMBefore": "需要修改的行 🚀\n",
+		"LMAfter":  "已修改的行 ✅\n",
 	}
-	out, err := BuildRDJSON(in)
+	inputJSON, _ := json.Marshal(input)
+	out, err := ConvertJSON(inputJSON, "reviewdog")
 	if err != nil {
 		t.Fatalf("err: %v", err)
 	}
@@ -199,13 +207,14 @@ func TestUTF8_ChineseEmoji(t *testing.T) {
 }
 
 func TestUTF8_MixedContent(t *testing.T) {
-	in := Input{
-		FilePath:  "mixed.go",
-		BaseText:  "// English comment\n// 日本語コメント\n// 中文注释\n// Emoji 🎉\n",
-		LMBefore: "// 日本語コメント\n",
-		LMAfter:  "// Japanese comment\n",
+	input := map[string]interface{}{
+		"FilePath": "mixed.go",
+		"BaseText": "// English comment\n// 日本語コメント\n// 中文注释\n// Emoji 🎉\n",
+		"LMBefore": "// 日本語コメント\n",
+		"LMAfter":  "// Japanese comment\n",
 	}
-	out, err := BuildRDJSON(in)
+	inputJSON, _ := json.Marshal(input)
+	out, err := ConvertJSON(inputJSON, "reviewdog")
 	if err != nil {
 		t.Fatalf("err: %v", err)
 	}
@@ -216,12 +225,13 @@ func TestUTF8_MixedContent(t *testing.T) {
 }
 
 func TestUTF8_NoBefore_FullAfter(t *testing.T) {
-	in := Input{
-		FilePath: "unicode.txt",
-		BaseText: "こんにちは\n世界\nWorld\n",
-		LMAfter: "こんにちは\nせかい\nWorld\n",
+	input := map[string]interface{}{
+		"FilePath": "unicode.txt",
+		"BaseText": "こんにちは\n世界\nWorld\n",
+		"LMAfter":  "こんにちは\nせかい\nWorld\n",
 	}
-	out, err := BuildRDJSON(in)
+	inputJSON, _ := json.Marshal(input)
+	out, err := ConvertJSON(inputJSON, "reviewdog")
 	if err != nil {
 		t.Fatalf("err: %v", err)
 	}

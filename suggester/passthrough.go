@@ -87,9 +87,18 @@ func ReviewdogInjector(output map[string]interface{}, core *CoreResult) error {
 	}
 
 	// Copy other fields from input to diagnostic
-	if message, exists := output["Message"]; exists {
-		diagnostic["message"] = fmt.Sprintf("%v\n```suggestion\n%s\n```", message, core.After)
+	afterText := core.After
+	// Remove trailing newline if present for message formatting
+	if len(afterText) > 0 && afterText[len(afterText)-1] == '\n' {
+		afterText = afterText[:len(afterText)-1]
+	}
+
+	if message, exists := output["Message"]; exists && message != "" {
+		diagnostic["message"] = fmt.Sprintf("%v\n```suggestion\n%s\n```", message, afterText)
 		delete(output, "Message") // Remove from top level
+	} else {
+		// Default message with suggestion
+		diagnostic["message"] = fmt.Sprintf("Replace code with suggestion\n```suggestion\n%s\n```", afterText)
 	}
 
 	if severity, exists := output["Severity"]; exists {
@@ -304,18 +313,4 @@ func PassthroughConvert(input []byte, format string) ([]byte, error) {
 	}
 
 	return transformer.Transform(input)
-}
-
-// ConvertInputToJSON converts Input struct to JSON for passthrough processing
-func ConvertInputToJSON(input Input) ([]byte, error) {
-	data := map[string]interface{}{
-		"FilePath":   input.FilePath,
-		"BaseText":   input.BaseText,
-		"LMBefore":   input.LMBefore,
-		"LMAfter":    input.LMAfter,
-		"Message":    input.Message,
-		"Severity":   input.Severity,
-		"SourceName": input.SourceName,
-	}
-	return json.Marshal(data)
 }

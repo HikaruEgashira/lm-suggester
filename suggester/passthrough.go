@@ -46,17 +46,16 @@ func StandardComputeCore(input map[string]interface{}) (*CoreResult, error) {
 		return nil, fmt.Errorf("LMAfter/lm_after is required")
 	}
 
+	if filePath == "" {
+		return nil, fmt.Errorf("FilePath/file_path is required")
+	}
+
 	if baseText == "" {
-		if filePath != "" {
-			content, err := os.ReadFile(filePath)
-			if err == nil {
-				baseText = string(content)
-			} else {
-				return nil, fmt.Errorf("BaseText/base_text is required (failed to read from %s: %w)", filePath, err)
-			}
-		} else {
-			return nil, fmt.Errorf("BaseText/base_text is required")
+		content, err := os.ReadFile(filePath)
+		if err != nil {
+			return nil, fmt.Errorf("failed to read file %s: %w", filePath, err)
 		}
+		baseText = string(content)
 	}
 
 	return ExtractCore(filePath, baseText, lmBefore, lmAfter)

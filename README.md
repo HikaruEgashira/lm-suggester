@@ -9,28 +9,22 @@ Convert LLM suggestions and external tool outputs to [reviewdog](https://github.
 Agentic PR review prompt
 
 ```
-Analyze the code and generate suggestions in this format (one per line, not an array):
+Analyze the code and generate suggestions in this format (one per line, not an array)
 {"file_path":"path/to/file","base_text":"<full file content>","lm_before":"<exact match>","lm_after":"<replacement>","message":"<reason>"}
 
-Requirements:
+Requirements
 - lm_before must match exactly (including whitespace)
 - Include complete base_text for line number calculation
 - Each suggestion as separate JSON object
 
-Then execute this pipeline:
+Then execute this pipeline
 echo '<your suggestions here>' | lm-suggester | CI_REPO_OWNER=owner CI_REPO_NAME=repo CI_PULL_REQUEST=123 CI_COMMIT=$(gh pr view 123 -q .headRefOid) REVIEWDOG_GITHUB_API_TOKEN=$(gh auth token) reviewdog -f=rdjson -reporter=github-pr-review
 ```
 
 ## Installation
 
-### Using lm-suggester cli
-
 ```bash
-# Install globally with mise
 mise use -g github:HikaruEgashira/lm-suggester
-
-# Or install locally in your project
-mise use github:HikaruEgashira/lm-suggester
 ```
 
 For other installation methods, see the [releases page](https://github.com/HikaruEgashira/lm-suggester/releases).
@@ -39,7 +33,7 @@ For other installation methods, see the [releases page](https://github.com/Hikar
 
 ### Basic Usage
 
-The CLI reads JSON input and converts it to reviewdog format:
+The CLI reads JSON input and converts it to reviewdog format.
 
 ```bash
 echo '{"file_path":"main.go","lm_after":"fixed code","message":"Fix typo"}' | lm-suggester
@@ -90,7 +84,7 @@ echo '{"file_path":"main.go","lm_after":"fixed code","message":"Fix typo"}' | lm
 
 ### Pass-through Format Support
 
-lm-suggester supports pass-through of additional fields. Any extra fields in the input JSON are preserved alongside the computed diagnostics:
+lm-suggester supports pass-through of additional fields. Any extra fields in the input JSON are preserved alongside the computed diagnostics.
 
 #### Input with additional fields
 
@@ -149,7 +143,7 @@ This pass-through behavior preserves all input fields, allowing integration with
 
 #### Manual Integration
 
-Pipe the output directly to reviewdog:
+Pipe the output directly to reviewdog.
 
 ```bash
 # Generate suggestion and review
@@ -161,7 +155,7 @@ lm-suggester -i suggestion.json | reviewdog -f=rdjson -reporter=github-pr-check
 
 #### Automatic Execution
 
-Automatically run reviewdog with the `--reviewdog` flag:
+Automatically run reviewdog with the `--reviewdog` flag.
 
 ```bash
 # Run reviewdog with local reporter

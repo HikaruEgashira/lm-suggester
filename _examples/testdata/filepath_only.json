@@ -1,0 +1,6 @@
+{
+  "FilePath": "_examples/testdata/simple_replacement.json",
+  "LMBefore": "  \"LMBefore\": \"\tprintln(\\\"hello\\\")\\n\",",
+  "LMAfter": "  \"lm_before\": \"\tprintln(\\\"hello\\\")\\n\",",
+  "Message": "Use lowercase field names for consistency"
+}

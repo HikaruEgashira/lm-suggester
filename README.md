@@ -1,8 +1,8 @@
-# llm-suggester
+# lm-suggester
 
-[![Go Reference](https://pkg.go.dev/badge/github.com/HikaruEgashira/llm-suggester.svg)](https://pkg.go.dev/github.com/HikaruEgashira/llm-suggester)
-[![Test](https://github.com/HikaruEgashira/llm-suggester/actions/workflows/test.yml/badge.svg)](https://github.com/HikaruEgashira/llm-suggester/actions/workflows/test.yml)
-[![Release](https://github.com/HikaruEgashira/llm-suggester/actions/workflows/release.yml/badge.svg)](https://github.com/HikaruEgashira/llm-suggester/actions/workflows/release.yml)
+[![Go Reference](https://pkg.go.dev/badge/github.com/HikaruEgashira/lm-suggester.svg)](https://pkg.go.dev/github.com/HikaruEgashira/lm-suggester)
+[![Test](https://github.com/HikaruEgashira/lm-suggester/actions/workflows/test.yml/badge.svg)](https://github.com/HikaruEgashira/lm-suggester/actions/workflows/test.yml)
+[![Release](https://github.com/HikaruEgashira/lm-suggester/actions/workflows/release.yml/badge.svg)](https://github.com/HikaruEgashira/lm-suggester/actions/workflows/release.yml)
 
 Convert LLM suggestions and external tool outputs to [reviewdog](https://github.com/reviewdog/reviewdog) JSON format for seamless code review automation.
 
@@ -11,12 +11,12 @@ Convert LLM suggestions and external tool outputs to [reviewdog](https://github.
 ### Go Install
 
 ```bash
-go install github.com/HikaruEgashira/llm-suggester/cmd/llm-suggester@latest
+go install github.com/HikaruEgashira/lm-suggester/cmd/lm-suggester@latest
 ```
 
 ### Binary Download
 
-Download the latest binary from the [releases page](https://github.com/HikaruEgashira/llm-suggester/releases).
+Download the latest binary from the [releases page](https://github.com/HikaruEgashira/lm-suggester/releases).
 
 ## Usage
 
@@ -26,16 +26,16 @@ The CLI reads JSON input and converts it to reviewdog format:
 
 ```bash
 # From stdin
-echo '{"file_path":"main.go","llm_after":"fixed code","message":"Fix typo"}' | llm-suggester
+echo '{"file_path":"main.go","llm_after":"fixed code","message":"Fix typo"}' | lm-suggester
 
 # From file
-llm-suggester -i suggestion.json
+lm-suggester -i suggestion.json
 
 # To file
-llm-suggester -i suggestion.json -o reviewdog.json
+lm-suggester -i suggestion.json -o reviewdog.json
 
 # Pretty print
-llm-suggester -i suggestion.json -p
+lm-suggester -i suggestion.json -p
 ```
 
 ### Input Format
@@ -62,7 +62,7 @@ The CLI expects JSON input with the following structure:
 - `base_text` (optional): Original file content. If not provided, reads from `file_path`
 - `llm_before` (optional): Text to be replaced. If not provided, computes minimal diff automatically
 - `severity` (optional): Severity level (INFO, WARNING, ERROR). Default: INFO
-- `source_name` (optional): Name of the tool. Default: llm-suggester
+- `source_name` (optional): Name of the tool. Default: lm-suggester
 
 ### Integration with reviewdog
 
@@ -70,10 +70,10 @@ Pipe the output directly to reviewdog:
 
 ```bash
 # Generate suggestion and review
-your-llm-tool | llm-suggester | reviewdog -f=rdjson -reporter=github-pr-review
+your-llm-tool | lm-suggester | reviewdog -f=rdjson -reporter=github-pr-review
 
 # With GitHub Actions
-llm-suggester -i suggestion.json | reviewdog -f=rdjson -reporter=github-pr-check
+lm-suggester -i suggestion.json | reviewdog -f=rdjson -reporter=github-pr-check
 ```
 
 ### Examples
@@ -81,7 +81,7 @@ llm-suggester -i suggestion.json | reviewdog -f=rdjson -reporter=github-pr-check
 #### Simple Replacement
 
 ```bash
-cat <<EOF | llm-suggester
+cat <<EOF | lm-suggester
 {
   "file_path": "main.go",
   "llm_after": "fmt.Println(\"Hello, World!\")",
@@ -93,7 +93,7 @@ EOF
 #### With Context
 
 ```bash
-cat <<EOF | llm-suggester -p
+cat <<EOF | lm-suggester -p
 {
   "file_path": "utils/helper.go",
   "llm_before": "// TODO: implement this",
@@ -110,7 +110,7 @@ EOF
 ```bash
 # Process multiple suggestions
 for file in suggestions/*.json; do
-  llm-suggester -i "$file" >> combined.json
+  lm-suggester -i "$file" >> combined.json
 done
 
 # Review all at once
@@ -126,7 +126,7 @@ cat combined.json | reviewdog -f=rdjson -reporter=local
 - name: Run LLM Review
   run: |
     llm-tool analyze --output suggestions.json
-    llm-suggester -i suggestions.json | \
+    lm-suggester -i suggestions.json | \
       reviewdog -f=rdjson -reporter=github-pr-review
 ```
 
@@ -135,7 +135,7 @@ cat combined.json | reviewdog -f=rdjson -reporter=local
 ```bash
 # Run local code review
 git diff HEAD^ | llm-tool suggest | \
-  llm-suggester | \
+  lm-suggester | \
   reviewdog -f=rdjson -reporter=local -diff="git diff HEAD^"
 ```
 
@@ -143,7 +143,7 @@ git diff HEAD^ | llm-tool suggest | \
 
 ```go
 // Use as a library
-import "github.com/HikaruEgashira/llm-suggester/suggester"
+import "github.com/HikaruEgashira/lm-suggester/suggester"
 
 input := suggester.Input{
     FilePath:  "main.go",
@@ -158,13 +158,13 @@ rdJSON, err := suggester.BuildRDJSON(input)
 
 ```
 Usage:
-  llm-suggester [flags]
+  lm-suggester [flags]
 
 Flags:
   -i, --input string    Input JSON file (default: stdin)
   -o, --output string   Output file (default: stdout)
   -p, --pretty          Pretty-print JSON output
-  -h, --help            Help for llm-suggester
+  -h, --help            Help for lm-suggester
       --version         Version information
 ```
 
@@ -173,9 +173,9 @@ Flags:
 ### Build from Source
 
 ```bash
-git clone https://github.com/HikaruEgashira/llm-suggester.git
-cd llm-suggester
-go build ./cmd/llm-suggester
+git clone https://github.com/HikaruEgashira/lm-suggester.git
+cd lm-suggester
+go build ./cmd/lm-suggester
 ```
 
 ### Run Tests

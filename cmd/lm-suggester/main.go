@@ -7,7 +7,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/HikaruEgashira/llm-suggester/suggester"
+	"github.com/HikaruEgashira/lm-suggester/suggester"
 	"github.com/spf13/cobra"
 )
 
@@ -44,9 +44,9 @@ func main() {
 	)
 
 	rootCmd := &cobra.Command{
-		Use:   "llm-suggester",
+		Use:   "lm-suggester",
 		Short: "Convert LLM suggestions to reviewdog JSON format",
-		Long: `llm-suggester transforms suggestions from LLMs and other external tools
+		Long: `lm-suggester transforms suggestions from LLMs and other external tools
 into reviewdog-compatible JSON format for code review automation.`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			var input io.Reader = os.Stdin
@@ -105,7 +105,7 @@ into reviewdog-compatible JSON format for code review automation.`,
 			}
 
 			if cliInput.SourceName == "" {
-				cliInput.SourceName = "llm-suggester"
+				cliInput.SourceName = "lm-suggester"
 			}
 
 			if cliInput.Severity == "" {
@@ -163,7 +163,7 @@ into reviewdog-compatible JSON format for code review automation.`,
 		Use:   "version",
 		Short: "Print version information",
 		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Printf("llm-suggester %s\n", version)
+			fmt.Printf("lm-suggester %s\n", version)
 			fmt.Printf("  commit: %s\n", commit)
 			fmt.Printf("  built at: %s\n", date)
 			fmt.Printf("  built by: %s\n", builtBy)

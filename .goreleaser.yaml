@@ -5,9 +5,9 @@ before:
     - go mod tidy
 
 builds:
-  - id: llm-suggester
-    main: ./cmd/llm-suggester
-    binary: llm-suggester
+  - id: lm-suggester
+    main: ./cmd/lm-suggester
+    binary: lm-suggester
     env:
       - CGO_ENABLED=0
     goos:
@@ -29,7 +29,7 @@ builds:
       - -X main.builtBy=goreleaser
 
 archives:
-  - id: llm-suggester
+  - id: lm-suggester
     name_template: >-
       {{ .ProjectName }}_
       {{- title .Os }}_
@@ -73,7 +73,7 @@ changelog:
 release:
   github:
     owner: HikaruEgashira
-    name: llm-suggester
+    name: lm-suggester
   draft: false
   prerelease: auto
   mode: append
@@ -82,7 +82,7 @@ release:
 
     ### Go Install
     ```bash
-    go install github.com/HikaruEgashira/llm-suggester/cmd/llm-suggester@latest
+    go install github.com/HikaruEgashira/lm-suggester/cmd/lm-suggester@latest
     ```
 
     ### Binary Download

@@ -8,13 +8,6 @@ Convert LLM suggestions and external tool outputs to [reviewdog](https://github.
 
 ## Installation
 
-### Homebrew (macOS/Linux)
-
-```bash
-brew tap HikaruEgashira/tap
-brew install llm-suggester
-```
-
 ### Go Install
 
 ```bash

@@ -38,15 +38,15 @@ jobs:
         timeout-minutes: 5
 
       - name: Build CLI
-        run: go build -v ./cmd/llm-suggester
+        run: go build -v ./cmd/lm-suggester
         timeout-minutes: 5
 
       - name: Test CLI
         run: |
           # Test with example data files
-          cat _examples/testdata/simple_replacement.json | ./llm-suggester -p
+          cat _examples/testdata/simple_replacement.json | ./lm-suggester -p
           # Test with file input
-          ./llm-suggester -i _examples/testdata/japanese_comment.json
+          ./lm-suggester -i _examples/testdata/japanese_comment.json
           # Test version command
-          ./llm-suggester version
+          ./lm-suggester version
         timeout-minutes: 2

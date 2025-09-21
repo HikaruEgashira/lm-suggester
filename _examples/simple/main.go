@@ -6,7 +6,7 @@ import (
 	"io"
 	"os"
 
-	"github.com/HikaruEgashira/llm-suggester/suggester"
+	"github.com/HikaruEgashira/lm-suggester/suggester"
 )
 
 func main() {

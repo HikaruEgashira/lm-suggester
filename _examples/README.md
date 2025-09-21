@@ -1,6 +1,6 @@
-# llm-suggester Examples
+# lm-suggester Examples
 
-This directory contains examples demonstrating the usage of the llm-suggester library.
+This directory contains examples demonstrating the usage of the lm-suggester library.
 
 ## Usage
 

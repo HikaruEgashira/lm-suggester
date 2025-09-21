@@ -213,10 +213,14 @@ func runReviewdog(jsonData []byte, reporter, filterMode string, failOnError bool
 
 	if err := cmd.Run(); err != nil {
 		if exitErr, ok := err.(*exec.ExitError); ok {
+			// Only exit with error code if failOnError is true
+			// Otherwise, ignore the error (same as pipe behavior)
 			if failOnError {
 				os.Exit(exitErr.ExitCode())
 			}
-			return fmt.Errorf("reviewdog exited with code %d", exitErr.ExitCode())
+			// Return nil to match the behavior of direct pipe
+			// (reviewdog outputs to stdout even when it exits with code 1)
+			return nil
 		}
 		return err
 	}

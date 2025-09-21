@@ -4,7 +4,7 @@
 [![Test](https://github.com/HikaruEgashira/lm-suggester/actions/workflows/test.yml/badge.svg)](https://github.com/HikaruEgashira/lm-suggester/actions/workflows/test.yml)
 [![Release](https://github.com/HikaruEgashira/lm-suggester/actions/workflows/release.yml/badge.svg)](https://github.com/HikaruEgashira/lm-suggester/actions/workflows/release.yml)
 
-Convert LLM suggestions and external tool outputs to [reviewdog](https://github.com/reviewdog/reviewdog) JSON format for seamless code review automation.
+LLMや外部ツールの提案を[reviewdog](https://github.com/reviewdog/reviewdog) JSON形式に変換し、コードレビューを自動化するツールです。
 
 ## Installation
 
@@ -14,25 +14,23 @@ Convert LLM suggestions and external tool outputs to [reviewdog](https://github.
 go install github.com/HikaruEgashira/lm-suggester/cmd/lm-suggester@latest
 ```
 
-### Binary Download
-
-Download the latest binary from the [releases page](https://github.com/HikaruEgashira/lm-suggester/releases).
-
-### Using mise
+### Using lm-suggester cli
 
 ```bash
-# Install globally
+# Install globally with mise
 mise use -g github:HikaruEgashira/lm-suggester
 
 # Or install locally in your project
 mise use github:HikaruEgashira/lm-suggester
 ```
 
+その他のインストール方法は[リリースページ](https://github.com/HikaruEgashira/lm-suggester/releases)を参照してください。
+
 ## Usage
 
-### Basic Usage
+### 基本的な使い方
 
-The CLI reads JSON input and converts it to reviewdog format:
+CLIはJSON入力を読み込み、reviewdog形式に変換します：
 
 ```bash
 # From stdin
@@ -48,37 +46,117 @@ lm-suggester -i suggestion.json -o reviewdog.json
 lm-suggester -i suggestion.json -p
 ```
 
-### Input Format
+### 入出力形式
 
-The CLI expects JSON input with the following structure:
+#### 入力 (必須フィールドのみ)
 
 ```json
 {
-  "file_path": "path/to/file.go",
-  "base_text": "original file content",
-  "lm_before": "old code",
-  "lm_after": "new code",
-  "message": "Description of the change",
-  "severity": "INFO",
-  "source_name": "my-linter"
+  "file_path": "main.go",
+  "lm_after": "fmt.Println(\"Hello, World!\")",
+  "message": "Use fmt.Println instead of print"
 }
 ```
 
-#### Fields
+#### 出力 (reviewdog JSON)
 
-- `file_path` (required): Path to the target file
-- `lm_after` (required): The suggested replacement text
-- `message` (required): Description of the suggestion
-- `base_text` (optional): Original file content. If not provided, reads from `file_path`
-- `lm_before` (optional): Text to be replaced. If not provided, computes minimal diff automatically
-- `severity` (optional): Severity level (INFO, WARNING, ERROR). Default: INFO
-- `source_name` (optional): Name of the tool. Default: lm-suggester
+```json
+{
+  "diagnostics": [
+    {
+      "message": "Use fmt.Println instead of print",
+      "location": {
+        "path": "main.go",
+        "range": {
+          "start": {"line": 10, "column": 5},
+          "end": {"line": 10, "column": 30}
+        }
+      },
+      "severity": "INFO",
+      "source": {"name": "lm-suggester"},
+      "suggestions": [
+        {
+          "range": {
+            "start": {"line": 10, "column": 5},
+            "end": {"line": 10, "column": 30}
+          },
+          "text": "fmt.Println(\"Hello, World!\")"
+        }
+      ]
+    }
+  ]
+}
+```
 
-### Integration with reviewdog
+### SARIF形式への変換
 
-#### Manual Integration
+reviewdog経由でSARIF形式に変換できます：
 
-Pipe the output directly to reviewdog:
+```bash
+lm-suggester -i suggestion.json | reviewdog -f=rdjson -reporter=sarif
+```
+
+#### SARIF出力例
+
+```json
+{
+  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "lm-suggester"
+        }
+      },
+      "results": [
+        {
+          "message": {"text": "Use fmt.Println instead of print"},
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {"uri": "main.go"},
+                "region": {
+                  "startLine": 10,
+                  "startColumn": 5,
+                  "endLine": 10,
+                  "endColumn": 30
+                }
+              }
+            }
+          ],
+          "fixes": [
+            {
+              "artifactChanges": [
+                {
+                  "artifactLocation": {"uri": "main.go"},
+                  "replacements": [
+                    {
+                      "deletedRegion": {
+                        "startLine": 10,
+                        "startColumn": 5,
+                        "endLine": 10,
+                        "endColumn": 30
+                      },
+                      "insertedContent": {"text": "fmt.Println(\"Hello, World!\")"}
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+### reviewdogとの連携
+
+#### 手動連携
+
+出力を直接reviewdogにパイプ：
 
 ```bash
 # Generate suggestion and review
@@ -88,9 +166,9 @@ your-llm-tool | lm-suggester | reviewdog -f=rdjson -reporter=github-pr-review
 lm-suggester -i suggestion.json | reviewdog -f=rdjson -reporter=github-pr-check
 ```
 
-#### Automatic reviewdog Execution
+#### 自動実行
 
-Use the `--reviewdog` flag to automatically run reviewdog:
+`--reviewdog`フラグで自動的にreviewdogを実行：
 
 ```bash
 # Run reviewdog with local reporter
@@ -110,26 +188,12 @@ echo '{"file_path":"main.go","llm_after":"fixed","message":"Fix"}' | \
   lm-suggester --reviewdog --reporter=local
 ```
 
-For available reviewdog options, see [reviewdog documentation](https://github.com/reviewdog/reviewdog).
-
-### Examples
-
-#### Simple Replacement
-
-```bash
-cat <<EOF | lm-suggester
-{
-  "file_path": "main.go",
-  "lm_after": "fmt.Println(\"Hello, World!\")",
-  "message": "Use fmt.Println instead of print"
-}
-EOF
-```
+利用可能なreviewdogオプションは[reviewdogドキュメント](https://github.com/reviewdog/reviewdog)を参照してください。
 
 
-## Use Cases
+## 使用例
 
-### CI/CD Integration
+### CI/CD連携
 
 ```yaml
 # GitHub Actions example
@@ -140,7 +204,7 @@ EOF
       reviewdog -f=rdjson -reporter=github-pr-review
 ```
 
-### Local Development
+### ローカル開発
 
 ```bash
 # Run local code review
@@ -149,7 +213,7 @@ git diff HEAD^ | llm-tool suggest | \
   reviewdog -f=rdjson -reporter=local -diff="git diff HEAD^"
 ```
 
-### Custom Tool Integration
+### ライブラリとして使用
 
 ```go
 // Use as a library
@@ -164,7 +228,7 @@ input := suggester.Input{
 rdJSON, err := suggester.BuildRDJSON(input)
 ```
 
-## Command Options
+## コマンドオプション
 
 ```
 Usage:
@@ -175,18 +239,18 @@ Flags:
   -o, --output string        Output file (default: stdout)
   -p, --pretty               Pretty-print JSON output
       --reviewdog            Run reviewdog with the output
-      --reporter string      reviewdog reporter (default: local)
-      --filter-mode string   reviewdog filter mode (default: nofilter)
+      --reporter string      reviewdog reporter (local, github-pr-review, github-pr-check, etc.) (default: local)
+      --filter-mode string   reviewdog filter mode (added, diff_context, file, nofilter) (default: nofilter)
       --fail-on-error        Exit with non-zero code when reviewdog finds errors
   -h, --help                 Help for lm-suggester
-      --version              Version information
+      --version              Print version information
 ```
 
 ## License
 
 MIT License - see [LICENSE](LICENSE) file for details.
 
-## Related Projects
+## 関連プロジェクト
 
 - [reviewdog](https://github.com/reviewdog/reviewdog) - Automated code review tool
 - [reviewdog/action-suggester](https://github.com/reviewdog/action-suggester) - GitHub Action for suggestions

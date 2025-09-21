@@ -42,11 +42,12 @@ lm-suggester -i suggestion.json -p
 
 ### Input/Output Format
 
-#### Input (required fields only)
+#### Input
 
 ```json
 {
   "file_path": "main.go",
+  "lm_before": "print(\"Hello, World!\")",
   "lm_after": "fmt.Println(\"Hello, World!\")",
   "message": "Use fmt.Println instead of print"
 }

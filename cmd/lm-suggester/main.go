@@ -119,8 +119,20 @@ Automatically detects and supports both single JSON and JSONL (JSON Lines) forma
 }
 
 func runReviewdog(jsonData []byte, reporter, filterMode string, failOnError bool) error {
+	stdout, stderr, err := runReviewdogCapture(jsonData, reporter, filterMode, failOnError)
+	if err != nil {
+		return err
+	}
+	// For CLI usage, output to stdout/stderr
+	os.Stdout.Write(stdout)
+	os.Stderr.Write(stderr)
+	return nil
+}
+
+// runReviewdogCapture runs reviewdog and captures stdout/stderr for use in MCP
+func runReviewdogCapture(jsonData []byte, reporter, filterMode string, failOnError bool) (stdout, stderr []byte, err error) {
 	if _, err := exec.LookPath("reviewdog"); err != nil {
-		return fmt.Errorf("reviewdog is not installed. Please install it from https://github.com/reviewdog/reviewdog")
+		return nil, nil, fmt.Errorf("reviewdog is not installed. Please install it from https://github.com/reviewdog/reviewdog")
 	}
 
 	args := []string{
@@ -135,22 +147,21 @@ func runReviewdog(jsonData []byte, reporter, filterMode string, failOnError bool
 
 	cmd := exec.Command("reviewdog", args...)
 	cmd.Stdin = bytes.NewReader(jsonData)
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
+
+	var stdoutBuf, stderrBuf bytes.Buffer
+	cmd.Stdout = &stdoutBuf
+	cmd.Stderr = &stderrBuf
 
 	if err := cmd.Run(); err != nil {
 		if exitErr, ok := err.(*exec.ExitError); ok {
-			// Only exit with error code if failOnError is true
-			// Otherwise, ignore the error (same as pipe behavior)
-			if failOnError {
-				os.Exit(exitErr.ExitCode())
+			// For non-failOnError mode, treat exit code 1 as success (reviewdog convention)
+			if !failOnError || exitErr.ExitCode() == 1 {
+				return stdoutBuf.Bytes(), stderrBuf.Bytes(), nil
 			}
-			// Return nil to match the behavior of direct pipe
-			// (reviewdog outputs to stdout even when it exits with code 1)
-			return nil
+			return stdoutBuf.Bytes(), stderrBuf.Bytes(), fmt.Errorf("reviewdog exited with code %d", exitErr.ExitCode())
 		}
-		return err
+		return stdoutBuf.Bytes(), stderrBuf.Bytes(), err
 	}
 
-	return nil
+	return stdoutBuf.Bytes(), stderrBuf.Bytes(), nil
 }

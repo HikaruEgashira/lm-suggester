@@ -10,6 +10,8 @@ Type "cat _examples/testdata/simple_replacement.json"
 Sleep 500ms
 Enter
 Sleep 2s
+Enter
+Sleep 500ms
 
 # Convert to reviewdog JSON format
 Type "lm-suggester -i _examples/testdata/simple_replacement.json"

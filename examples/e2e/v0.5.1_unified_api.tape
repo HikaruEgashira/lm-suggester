@@ -25,6 +25,6 @@ Type "# Convert to reviewdog format using unified API"
 Enter
 Sleep 500ms
 
-Type "cat ../testdata/simple_replacement.json | go run cmd/lm-suggester/main.go"
+Type "cat ../testdata/simple_replacement.json | lm-suggester"
 Enter
 Sleep 3s

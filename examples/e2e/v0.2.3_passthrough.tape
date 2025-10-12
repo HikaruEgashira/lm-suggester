@@ -22,6 +22,6 @@ Enter
 Type "# Transform to reviewdog format (custom fields preserved)"
 Enter
 Sleep 500ms
-Type "cat ../testdata/passthrough_example.json | go run cmd/lm-suggester/main.go"
+Type "cat ../testdata/passthrough_example.json | lm-suggester"
 Enter
 Sleep 2s

@@ -1,0 +1,26 @@
+# VHS tape demonstrating v0.4.0 JSONL format support
+Output v0.4.0_jsonl_support.gif
+
+Set Shell "bash"
+Set FontSize 14
+Set Width 1200
+Set Height 800
+Set Theme "Catppuccin Mocha"
+Set Padding 20
+
+# Show the JSONL input file with multiple suggestions
+Type "cat ../testdata/example.jsonl"
+Enter
+Sleep 2s
+Enter
+
+# Process JSONL format via stdin (pipe)
+Type "cat ../testdata/example.jsonl | lm-suggester"
+Enter
+Sleep 2s
+Enter
+
+# Process JSONL with pretty print for better readability
+Type "cat ../testdata/example.jsonl | lm-suggester --pretty"
+Enter
+Sleep 2.5s

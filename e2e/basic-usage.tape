@@ -12,13 +12,13 @@ Enter
 Sleep 2s
 
 # Convert to reviewdog JSON format
-Type "lm-suggester -i _examples/testdata/simple_replacement.json"
+Type "lm-suggester -i _examples/testdata/simple_replacement.json && echo"
 Sleep 500ms
 Enter
 Sleep 2s
 
 # Convert with pretty print
-Type "lm-suggester -i _examples/testdata/simple_replacement.json --pretty"
+Type "lm-suggester -i _examples/testdata/simple_replacement.json --pretty && echo"
 Sleep 500ms
 Enter
 Sleep 2.5s

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"io"
 	"os"
@@ -14,11 +13,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	var in suggester.Input
-	if err := json.Unmarshal(b, &in); err != nil {
-		panic(err)
-	}
-	out, err := suggester.BuildRDJSON(in)
+	out, err := suggester.Convert(b, "reviewdog")
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err.Error())
 		os.Exit(1)

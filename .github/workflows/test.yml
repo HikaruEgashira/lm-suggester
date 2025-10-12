@@ -44,9 +44,9 @@ jobs:
       - name: Test CLI
         run: |
           # Test with example data files
-          cat _examples/testdata/simple_replacement.json | ./lm-suggester -p
+          cat examples/testdata/simple_replacement.json | ./lm-suggester -p
           # Test with file input
-          ./lm-suggester -i _examples/testdata/japanese_comment.json
+          ./lm-suggester -i examples/testdata/japanese_comment.json
           # Test version command
           ./lm-suggester version
         timeout-minutes: 2
@@ -67,6 +67,6 @@ jobs:
             ./lm-suggester --reviewdog --reporter=local --filter-mode=nofilter || true
 
           # Verify JSON output format is compatible with reviewdog
-          cat _examples/testdata/simple_replacement.json | ./lm-suggester | \
+          cat examples/testdata/simple_replacement.json | ./lm-suggester | \
             reviewdog -f=rdjson -reporter=local -filter-mode=nofilter || true
         timeout-minutes: 2

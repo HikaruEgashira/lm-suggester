@@ -31,7 +31,7 @@ You are an expert E2E testing engineer specializing in CLI applications and visu
 
 4. **Tape File Structure**: Follow this template:
 ```tape
-Output e2e/feature-name.gif
+Output _examples/e2e/feature-name.gif
 Set FontSize 14
 Set Width 1200
 Set Height 800
@@ -52,9 +52,9 @@ Sleep 1s
    - Check that GIFs clearly show the CLI behavior
 
 6. **Organization**: Structure your output:
-   - Create tape files in a `vhs/` or `e2e/` directory
+   - Create tape files in the `_examples/e2e/` directory
    - Name files descriptively: `feature-name.tape`, `bug-fix-123.tape`
-   - Generate GIFs in the same directory or a `vhs/output/` subdirectory
+   - Generate GIFs in the same directory (`_examples/e2e/`)
 
 ## Technical Constraints and Best Practices
 

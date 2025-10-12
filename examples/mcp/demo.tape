@@ -1,12 +1,12 @@
 # VHS documentation: https://github.com/charmbracelet/vhs
 Output examples/mcp/demo.gif
 
-Set FontSize 14
-Set Width 1200
-Set Height 400
+Set FontSize 13
+Set Width 1400
+Set Height 600
 Set Theme "Catppuccin Mocha"
 Set Padding 20
 
-Type "lm-suggester mcp --help"
+Type "cd examples/mcp && ./run_demo.sh"
 Enter
-Sleep 2s
+Sleep 3s

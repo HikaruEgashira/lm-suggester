@@ -1,4 +1,4 @@
-Output e2e/help-command.gif
+Output _examples/e2e/help-command.gif
 Set FontSize 14
 Set Width 1200
 Set Height 800

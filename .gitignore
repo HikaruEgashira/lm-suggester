@@ -38,3 +38,5 @@ dist/
 # .vscode/
 cmd/lm-suggester/lm-suggester
 
+# VHS generated GIFs (tape source in e2e/, outputs in examples/e2e/)
+e2e/*.gif

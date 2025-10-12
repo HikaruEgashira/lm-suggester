@@ -1,6 +1,6 @@
 module github.com/HikaruEgashira/lm-suggester/cmd/lm-suggester
 
-go 1.22
+go 1.25
 
 require (
 	github.com/HikaruEgashira/lm-suggester v0.0.0

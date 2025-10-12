@@ -84,7 +84,7 @@ Automatically detects and supports both single JSON and JSONL (JSON Lines) forma
 					return fmt.Errorf("failed to write output file: %w", err)
 				}
 			} else {
-				fmt.Print(string(output))
+				fmt.Println(string(output))
 			}
 
 			return nil

@@ -111,6 +111,7 @@ Automatically detects and supports both single JSON and JSONL (JSON Lines) forma
 	}
 
 	rootCmd.AddCommand(versionCmd)
+	rootCmd.AddCommand(newMCPCommand())
 
 	if err := rootCmd.Execute(); err != nil {
 		os.Exit(1)

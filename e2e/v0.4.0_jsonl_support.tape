@@ -1,5 +1,5 @@
-# NOTE: Must be run from project root directory
-Output v040_jsonl_support.gif
+# VHS tape demonstrating v0.4.0 JSONL format support
+Output e2e/v0.4.0_jsonl_support.gif
 
 Set Shell "bash"
 Set FontSize 14
@@ -7,11 +7,6 @@ Set Width 1200
 Set Height 800
 Set Theme "Catppuccin Mocha"
 Set Padding 20
-
-Hide
-Type "cd /Users/hikae/ghq/github.com/HikaruEgashira/lm-suggester"
-Enter
-Show
 
 # Show the JSONL input file with multiple suggestions
 Type "cat _examples/testdata/example.jsonl"

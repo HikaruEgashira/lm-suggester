@@ -1,5 +1,5 @@
 # VHS tape demonstrating v0.5.1 unified Convert API with auto-detection
-Output e2e/v0.5.1_unified_api.gif
+Output examples/e2e/v0.5.1_unified_api.gif
 
 Set Shell "bash"
 Set FontSize 14
@@ -14,7 +14,7 @@ Enter
 Sleep 500ms
 
 # Show the input JSON
-Type "cat _examples/testdata/simple_replacement.json"
+Type "cat examples/testdata/simple_replacement.json"
 Enter
 Sleep 1.5s
 
@@ -25,6 +25,6 @@ Type "# Convert to reviewdog format using unified API"
 Enter
 Sleep 500ms
 
-Type "cat _examples/testdata/simple_replacement.json | go run cmd/lm-suggester/main.go"
+Type "cat examples/testdata/simple_replacement.json | go run cmd/lm-suggester/main.go"
 Enter
 Sleep 3s

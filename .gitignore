@@ -38,5 +38,3 @@ dist/
 # .vscode/
 cmd/lm-suggester/lm-suggester
 
-# VHS generated GIFs in e2e/ (symlinked from _examples/e2e/)
-e2e/*.gif

@@ -7,20 +7,16 @@ Set Padding 20
 
 # Show the input JSON file
 Type "cat _examples/testdata/simple_replacement.json"
-Sleep 500ms
 Enter
 Sleep 1s
 Enter
-Sleep 300ms
 
 # Convert to reviewdog JSON format
 Type "lm-suggester -i _examples/testdata/simple_replacement.json"
-Sleep 500ms
 Enter
 Sleep 1s
 
 # Convert with pretty print
 Type "lm-suggester -i _examples/testdata/simple_replacement.json --pretty"
-Sleep 500ms
 Enter
 Sleep 1.5s

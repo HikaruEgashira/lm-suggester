@@ -1,9 +1,17 @@
-Output v0.2.3_passthrough.gif
+# NOTE: Must be run from project root directory
+Output v023_passthrough.gif
+
+Set Shell "bash"
 Set FontSize 14
 Set Width 1200
 Set Height 800
 Set Theme "Catppuccin Mocha"
 Set Padding 20
+
+Hide
+Type "cd /Users/hikae/ghq/github.com/HikaruEgashira/lm-suggester"
+Enter
+Show
 
 Type "# v0.2.3 Feature: Passthrough JSON Transformation"
 Enter

@@ -4,7 +4,7 @@ All notable changes to lm-suggester will be documented in this file.
 
 ## [v0.6.0] - 2025-10-18
 
-![v0.6.0 Demo](examples/e2e/basic-usage.gif)
+![v0.6.0 Demo](examples/mcp/mcp.gif)
 
 ### ✨ New Features
 - MCP Server Support: Add Model Context Protocol server subcommand ([5dfa50c](https://github.com/HikaruEgashira/lm-suggester/commit/5dfa50c2f0b8c0ec0c7ce8e8bdd8c36b776ae1aa))

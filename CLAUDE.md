@@ -26,8 +26,8 @@ cat _examples/testdata/simple_replacement.json | go run _examples/simple/main.go
 ### 依存関係管理
 
 このプロジェクトは2つの独立した go.mod を持ちます:
-- **ルート `go.mod`**: ライブラリ (`suggester/`) の依存関係を管理
-- **`cmd/lm-suggester/go.mod`**: CLI ツールの依存関係を管理 (cobra など)
+- ルート `go.mod`: ライブラリ (`suggester/`) の依存関係を管理
+- `cmd/lm-suggester/go.mod`: CLI ツールの依存関係を管理 (cobra など)
 
 ライブラリに関係ない CLI 固有の依存関係は `cmd/` 内の go.mod で管理し、ルートの go.mod をクリーンに保ちます。
 

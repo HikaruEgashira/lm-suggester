@@ -46,7 +46,7 @@ jobs:
         timeout-minutes: 5
 
       - name: Submit SBOM to Dependency Graph
-        uses: advanced-security/spdx-dependency-submission-action@5530bab9ee4bbe66420ce8c02655d9eacb68b3b0  # v0.1.1
+        uses: advanced-security/spdx-dependency-submission-action@5530bab9ee4bbe66420ce8280624036c77f89746  # v0.1.1
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         with:
           filePath: sbom.spdx.json

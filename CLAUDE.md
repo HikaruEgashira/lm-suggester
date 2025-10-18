@@ -3,7 +3,7 @@ lm-suggester は LLM などの外部ツールから受け取った提案を revi
 開発環境は devenv で管理しています。`direnv allow` で環境を有効化してください。
 
 ```bash
-# devenv スクリプト
+# devenv スクリプト (direnv 有効時は直接実行)
 test          # テスト実行
 test-race     # レース検出付きテスト
 lint          # 静的検査
@@ -11,14 +11,18 @@ coverage      # カバレッジ確認
 bench         # ベンチマーク
 example       # サンプル実行
 
-# または go コマンドを直接実行
+# または devenv shell 経由で実行
+devenv shell test
+devenv shell test-race
+
+# go コマンドも利用可能
 go mod tidy
 go test ./...
 go test -race ./...
 go vet ./...
 go test -cover ./...
 go test -run none -bench . ./suggester
-cat _examples/testdata/simple_replacement.json | go run _examples/simple/main.go
+cat examples/testdata/simple_replacement.json | go run examples/simple/main.go
 ```
 
 ## アーキテクチャ

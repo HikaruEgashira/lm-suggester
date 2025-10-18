@@ -19,7 +19,7 @@ Demonstrates the CLI help commands:
 - `lm-suggester --help` - Main help text
 - `lm-suggester version --help` - Version command help
 
-**Output**: `_examples/e2e/help-command.gif`
+Output: `_examples/e2e/help-command.gif`
 
 ### basic-usage.tape
 
@@ -28,7 +28,7 @@ Shows basic usage of the CLI tool:
 - Converting to reviewdog JSON format
 - Pretty-printing the output
 
-**Output**: `_examples/e2e/basic-usage.gif`
+Output: `_examples/e2e/basic-usage.gif`
 
 ## Generating GIFs
 

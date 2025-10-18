@@ -4,11 +4,11 @@ lm-suggester automatically generates SBOM files to provide transparency about th
 
 ## Local Generation
 
-You can generate SBOM files locally using Nix:
+You can generate SBOM files locally using devenv:
 
 ```bash
-# Enter the Nix development shell (syft is pre-installed)
-nix develop
+# Enter the devenv shell (syft is pre-installed)
+devenv shell
 
 # Generate SPDX format
 syft dir:. -o spdx-json=sbom.spdx.json
@@ -20,8 +20,8 @@ syft dir:. -o cyclonedx-json=sbom.cyclonedx.json
 Or using a one-liner:
 
 ```bash
-nix develop --command syft dir:. -o spdx-json=sbom.spdx.json
-nix develop --command syft dir:. -o cyclonedx-json=sbom.cyclonedx.json
+devenv shell syft dir:. -o spdx-json=sbom.spdx.json
+devenv shell syft dir:. -o cyclonedx-json=sbom.cyclonedx.json
 ```
 
 ## References

@@ -47,7 +47,7 @@ result
 
 # devenv
 .devenv/
-.devenv.*/
+.devenv.*
 
 # SBOM files
 sbom.*.json

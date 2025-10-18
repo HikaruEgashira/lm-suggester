@@ -1,0 +1,8 @@
+{
+  "file_path": "main.go",
+  "base_text": "package main\n\nfunc main() {\n\tprint(\"Hello\")\n}",
+  "lm_before": "print(\"Hello\")",
+  "lm_after": "fmt.Println(\"Hello\")",
+  "message": "Use fmt.Println instead of print",
+  "reporter": "local"
+}

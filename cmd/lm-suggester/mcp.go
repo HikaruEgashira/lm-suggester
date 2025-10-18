@@ -1,0 +1,135 @@
+package main
+
+import (
+	"context"
+	"encoding/json"
+	"fmt"
+	"log"
+
+	"github.com/HikaruEgashira/lm-suggester/suggester"
+	"github.com/modelcontextprotocol/go-sdk/mcp"
+	"github.com/spf13/cobra"
+)
+
+// SuggestInput defines the input schema for the suggest tool
+type SuggestInput struct {
+	FilePath   string `json:"file_path" jsonschema:"required" jsonschema_description:"Path to the file to be reviewed"`
+	BaseText   string `json:"base_text,omitempty" jsonschema_description:"Original file content for diff calculation"`
+	LMBefore   string `json:"lm_before,omitempty" jsonschema_description:"Exact text to be replaced (must match exactly including whitespace)"`
+	LMAfter    string `json:"lm_after" jsonschema:"required" jsonschema_description:"Replacement text or suggestion"`
+	Message    string `json:"message" jsonschema:"required" jsonschema_description:"Explanation or reason for the suggestion"`
+	Severity   string `json:"severity,omitempty" jsonschema_description:"Severity level (ERROR, WARNING, INFO)"`
+	SourceName string `json:"source_name,omitempty" jsonschema_description:"Name of the tool or LLM that generated this suggestion"`
+	Reporter   string `json:"reporter,omitempty" jsonschema_description:"Reviewdog reporter to use (local, github-pr-review, etc.)"`
+}
+
+// SuggestOutput defines the output of the tool
+type SuggestOutput struct {
+	Success bool   `json:"success" jsonschema_description:"Whether the suggestion was successfully posted"`
+	Output  string `json:"output" jsonschema_description:"Output from reviewdog (stdout)"`
+	Error   string `json:"error,omitempty" jsonschema_description:"Error output from reviewdog (stderr) if any"`
+}
+
+// suggest handles the MCP tool call to suggest code changes via reviewdog
+func suggest(ctx context.Context, req *mcp.CallToolRequest, input SuggestInput) (*mcp.CallToolResult, SuggestOutput, error) {
+	// Marshal the input back to JSON for the suggester
+	inputJSON, err := json.Marshal(input)
+	if err != nil {
+		return &mcp.CallToolResult{
+			Content: []mcp.Content{&mcp.TextContent{Text: fmt.Sprintf("failed to marshal input: %v", err)}},
+			IsError: true,
+		}, SuggestOutput{Success: false, Error: fmt.Sprintf("marshal error: %v", err)}, nil
+	}
+
+	// Convert using the suggester library
+	rdJSON, err := suggester.Convert(inputJSON, "reviewdog")
+	if err != nil {
+		return &mcp.CallToolResult{
+			Content: []mcp.Content{&mcp.TextContent{Text: fmt.Sprintf("failed to convert: %v", err)}},
+			IsError: true,
+		}, SuggestOutput{Success: false, Error: fmt.Sprintf("convert error: %v", err)}, nil
+	}
+
+	// Determine reporter
+	reporter := "local"
+	if input.Reporter != "" {
+		reporter = input.Reporter
+	}
+
+	// Run reviewdog and capture output
+	stdout, stderr, err := runReviewdogCapture(rdJSON, reporter, "nofilter", false)
+	if err != nil {
+		return &mcp.CallToolResult{
+			Content: []mcp.Content{&mcp.TextContent{Text: fmt.Sprintf("reviewdog failed: %v\nStdout: %s\nStderr: %s", err, string(stdout), string(stderr))}},
+			IsError: true,
+		}, SuggestOutput{Success: false, Output: string(stdout), Error: fmt.Sprintf("%v\n%s", err, string(stderr))}, nil
+	}
+
+	return nil, SuggestOutput{
+		Success: true,
+		Output:  string(stdout),
+		Error:   string(stderr),
+	}, nil
+}
+
+// newMCPCommand creates the MCP subcommand
+func newMCPCommand() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "mcp",
+		Short: "Run lm-suggester as an MCP server",
+		Long: `Run lm-suggester as a Model Context Protocol (MCP) server.
+
+This allows AI assistants and LLMs to post code review suggestions directly
+through the MCP protocol over stdin/stdout.
+
+The server provides the following tool:
+  - suggest: Post code review suggestions via reviewdog
+
+Recommended: Use MCP Inspector for testing (handles initialize automatically):
+  npx @modelcontextprotocol/inspector lm-suggester mcp
+  # Open http://localhost:6274 in your browser
+
+CLI testing with Inspector:
+  npx @modelcontextprotocol/inspector --cli lm-suggester mcp --method tools/list
+
+Advanced: Direct JSON-RPC usage (requires manual initialize handshake):
+  echo -e '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{...}}
+  {"jsonrpc":"2.0","method":"notifications/initialized"}
+  {"jsonrpc":"2.0","id":2,"method":"tools/call","params":{...}}' | lm-suggester mcp
+
+Example tool call arguments:
+  {
+    "file_path": "main.go",
+    "base_text": "package main\n\nfunc main() {\n\tprint(\"Hello\")\n}",
+    "lm_before": "print(\"Hello\")",
+    "lm_after": "fmt.Println(\"Hello\")",
+    "message": "Use fmt.Println instead of print",
+    "reporter": "local"
+  }
+
+For more examples, see examples/mcp/README.md`,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			// Create MCP server
+			server := mcp.NewServer(&mcp.Implementation{
+				Name:    "lm-suggester",
+				Version: version,
+			}, nil)
+
+			// Add the suggest tool
+			mcp.AddTool(server, &mcp.Tool{
+				Name:        "suggest",
+				Description: "Post code review suggestions via reviewdog. Converts LLM suggestions to reviewdog format and runs reviewdog to post them. Takes file path, optional base text, optional exact match text (lm_before), replacement text (lm_after), explanation message, and optional reporter (local, github-pr-review, etc.). Returns success status, reviewdog output, and any errors. The output is captured and returned without polluting the MCP JSON-RPC protocol.",
+			}, suggest)
+
+			// Run the server over stdin/stdout
+			log.Printf("Starting MCP server (version %s)...", version)
+			if err := server.Run(context.Background(), &mcp.StdioTransport{}); err != nil {
+				return fmt.Errorf("MCP server failed: %w", err)
+			}
+
+			return nil
+		},
+	}
+
+	return cmd
+}

@@ -1,23 +1,23 @@
 lm-suggester は LLM などの外部ツールから受け取った提案を reviewdog JSON 形式へ変換するGoライブラリです。
 
+開発環境は devenv で管理しています。`direnv allow` で環境を有効化してください。
+
 ```bash
-# 依存関係の管理
+# devenv スクリプト
+test          # テスト実行
+test-race     # レース検出付きテスト
+lint          # 静的検査
+coverage      # カバレッジ確認
+bench         # ベンチマーク
+example       # サンプル実行
+
+# または go コマンドを直接実行
 go mod tidy
-
-# テスト実行
 go test ./...
-go test -race ./...  # レース検出付き
-
-# 静的検査
+go test -race ./...
 go vet ./...
-
-# カバレッジ確認
 go test -cover ./...
-
-# ベンチマーク（性能計測）
 go test -run none -bench . ./suggester
-
-# サンプル実行
 cat _examples/testdata/simple_replacement.json | go run _examples/simple/main.go
 ```
 

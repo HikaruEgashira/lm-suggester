@@ -2,6 +2,25 @@
 
 All notable changes to lm-suggester will be documented in this file.
 
+## [v0.6.0] - 2025-10-18
+
+![v0.6.0 Demo](examples/e2e/basic-usage.gif)
+
+### ✨ New Features
+- MCP Server Support: Add Model Context Protocol server subcommand ([5dfa50c](https://github.com/HikaruEgashira/lm-suggester/commit/5dfa50c2f0b8c0ec0c7ce8e8bdd8c36b776ae1aa))
+  - Integrate with MCP Inspector for interactive suggestion conversion
+  - Implement JSONRPC protocol for suggest tool
+  - Auto-exit on stdin close for better process management
+- Development Environment Migration: Migrate from Nix Flakes to devenv ([fa17c14](https://github.com/HikaruEgashira/lm-suggester/commit/fa17c14d79ed7ad29e47f3b71d0b29b6f41f65ab))
+  - Improved developer experience with devenv shell scripts
+  - Support for test, lint, coverage, bench, and example commands
+
+### 🔧 Others
+- SBOM Generation: Add Software Bill of Materials generation ([0c0ac3f](https://github.com/HikaruEgashira/lm-suggester/commit/0c0ac3fe7e30ea48dc42e8aefe7eb8e1e5f29c9a))
+- Documentation updates and cleanups ([c494850](https://github.com/HikaruEgashira/lm-suggester/commit/c49485077cfd1f3a2e9af69a05cdb4c9f57e6a21), [7f24081](https://github.com/HikaruEgashira/lm-suggester/commit/7f24081c82bc63e0c1dc7c7b7a2c7f3a11e8fe96))
+
+---
+
 ## [v0.5.1] - 2025-09-21
 
 ![v0.5.1 Demo](examples/e2e/v0.5.1_unified_api.gif)

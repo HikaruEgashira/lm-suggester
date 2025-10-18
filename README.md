@@ -3,6 +3,7 @@
 [![Go Reference](https://pkg.go.dev/badge/github.com/HikaruEgashira/lm-suggester.svg)](https://pkg.go.dev/github.com/HikaruEgashira/lm-suggester)
 [![Test](https://github.com/HikaruEgashira/lm-suggester/actions/workflows/test.yml/badge.svg)](https://github.com/HikaruEgashira/lm-suggester/actions/workflows/test.yml)
 [![Release](https://github.com/HikaruEgashira/lm-suggester/actions/workflows/release.yml/badge.svg)](https://github.com/HikaruEgashira/lm-suggester/actions/workflows/release.yml)
+[![SBOM](https://github.com/HikaruEgashira/lm-suggester/actions/workflows/sbom.yml/badge.svg)](https://github.com/HikaruEgashira/lm-suggester/actions/workflows/sbom.yml)
 
 Convert LLM suggestions and external tool outputs to [reviewdog](https://github.com/reviewdog/reviewdog) JSON format for seamless code review automation.
 
@@ -235,6 +236,14 @@ Flags:
   -h, --help                 Help for lm-suggester
       --version              Print version information
 ```
+
+## Security
+
+### SBOM (Software Bill of Materials)
+
+This project automatically generates and submits SBOM to GitHub's Dependency Graph for supply chain security. SBOMs are generated in SPDX 2.3 and CycloneDX JSON formats using [Syft](https://github.com/anchore/syft).
+
+For detailed information about SBOM generation, local usage, and troubleshooting, see [docs/security.md](docs/security.md)
 
 ## License
 

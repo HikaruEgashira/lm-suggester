@@ -7,10 +7,6 @@ This project uses [devenv](https://devenv.sh/) for development environment manag
 ### Setup
 
 ```bash
-# With direnv
-direnv allow
-
-# Or manually
 devenv shell
 ```
 

@@ -1,12 +1,10 @@
 package main
 
 import (
-	"bufio"
 	"context"
 	"encoding/json"
 	"fmt"
 	"log"
-	"os"
 
 	"github.com/HikaruEgashira/lm-suggester/suggester"
 	"github.com/modelcontextprotocol/go-sdk/mcp"
@@ -30,109 +28,6 @@ type SuggestOutput struct {
 	Success bool   `json:"success" jsonschema_description:"Whether the suggestion was successfully posted"`
 	Output  string `json:"output" jsonschema_description:"Output from reviewdog (stdout)"`
 	Error   string `json:"error,omitempty" jsonschema_description:"Error output from reviewdog (stderr) if any"`
-}
-
-// jsonrpcRequest represents a JSON-RPC 2.0 request
-type jsonrpcRequest struct {
-	JSONRPC string          `json:"jsonrpc"`
-	ID      json.RawMessage `json:"id,omitempty"`
-	Method  string          `json:"method"`
-	Params  json.RawMessage `json:"params,omitempty"`
-}
-
-// jsonrpcResponse represents a JSON-RPC 2.0 response
-type jsonrpcResponse struct {
-	JSONRPC string          `json:"jsonrpc"`
-	ID      json.RawMessage `json:"id,omitempty"`
-	Result  interface{}     `json:"result,omitempty"`
-	Error   interface{}     `json:"error,omitempty"`
-}
-
-// runOneshotMode processes JSONRPC messages from stdin and exits
-func runOneshotMode() error {
-	// Read all messages from stdin (newline-delimited JSONRPC)
-	scanner := bufio.NewScanner(os.Stdin)
-	var messages []json.RawMessage
-	for scanner.Scan() {
-		line := scanner.Bytes()
-		if len(line) == 0 {
-			continue
-		}
-		messages = append(messages, json.RawMessage(line))
-	}
-	if err := scanner.Err(); err != nil {
-		return fmt.Errorf("failed to read stdin: %w", err)
-	}
-
-	// Find tools/call request
-	var toolCallID json.RawMessage
-	var toolCallParams struct {
-		Name      string                 `json:"name"`
-		Arguments map[string]interface{} `json:"arguments"`
-	}
-	found := false
-	for _, msg := range messages {
-		var req jsonrpcRequest
-		if err := json.Unmarshal(msg, &req); err != nil {
-			continue
-		}
-		if req.Method == "tools/call" {
-			toolCallID = req.ID
-			if err := json.Unmarshal(req.Params, &toolCallParams); err != nil {
-				return fmt.Errorf("failed to unmarshal tools/call params: %w", err)
-			}
-			found = true
-			break
-		}
-	}
-
-	if !found {
-		return fmt.Errorf("no tools/call request found in stdin")
-	}
-
-	// Only support "suggest" tool
-	if toolCallParams.Name != "suggest" {
-		return fmt.Errorf("unsupported tool: %s (only 'suggest' is supported)", toolCallParams.Name)
-	}
-
-	// Parse suggest arguments
-	var input SuggestInput
-	argsJSON, err := json.Marshal(toolCallParams.Arguments)
-	if err != nil {
-		return fmt.Errorf("failed to marshal arguments: %w", err)
-	}
-	if err := json.Unmarshal(argsJSON, &input); err != nil {
-		return fmt.Errorf("failed to unmarshal suggest input: %w", err)
-	}
-
-	// Execute suggest function
-	_, output, err := suggest(context.Background(), nil, input)
-	if err != nil {
-		return fmt.Errorf("suggest execution failed: %w", err)
-	}
-
-	// Build JSONRPC response
-	response := jsonrpcResponse{
-		JSONRPC: "2.0",
-		ID:      toolCallID,
-		Result: map[string]interface{}{
-			"content": []map[string]string{
-				{"type": "text", "text": output.Output},
-			},
-			"isError": !output.Success,
-		},
-	}
-
-	// Output response as JSON
-	if err := json.NewEncoder(os.Stdout).Encode(response); err != nil {
-		return fmt.Errorf("failed to encode response: %w", err)
-	}
-
-	if !output.Success {
-		return fmt.Errorf("suggest failed: %s", output.Error)
-	}
-
-	return nil
 }
 
 // suggest handles the MCP tool call to suggest code changes via reviewdog
@@ -190,11 +85,11 @@ through the MCP protocol over stdin/stdout.
 The server provides the following tool:
   - suggest: Post code review suggestions via reviewdog
 
-Example usage with an MCP client (interactive mode):
+Example usage with an MCP client:
   lm-suggester mcp
 
-Example usage with oneshot mode (pipe):
-  echo -e 'JSONRPC_MSG1\nJSONRPC_MSG2\nJSONRPC_MSG3' | lm-suggester mcp --oneshot
+Example usage with pipe (stdin will be closed automatically when pipe ends):
+  echo -e 'JSONRPC_MSG1\nJSONRPC_MSG2\nJSONRPC_MSG3' | lm-suggester mcp
 
 Example tool call:
   {
@@ -206,11 +101,6 @@ Example tool call:
     "reporter": "local"
   }`,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			oneshot, _ := cmd.Flags().GetBool("oneshot")
-			if oneshot {
-				return runOneshotMode()
-			}
-
 			// Create MCP server
 			server := mcp.NewServer(&mcp.Implementation{
 				Name:    "lm-suggester",
@@ -232,8 +122,6 @@ Example tool call:
 			return nil
 		},
 	}
-
-	cmd.Flags().Bool("oneshot", false, "Process JSONRPC messages from stdin and exit (for pipe usage)")
 
 	return cmd
 }

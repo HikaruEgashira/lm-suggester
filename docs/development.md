@@ -16,23 +16,25 @@ devenv shell
 
 ### Available Commands
 
-With direnv enabled, you can run scripts directly:
+Run devenv scripts:
 
 ```bash
-test          # Run tests
-test-race     # Run tests with race detection
-lint          # Run linter
-coverage      # Check test coverage
-bench         # Run benchmarks
-example       # Run example
+devenv shell test          # Run tests
+devenv shell test-race     # Run tests with race detection
+devenv shell lint          # Run linter
+devenv shell coverage      # Check test coverage
+devenv shell bench         # Run benchmarks
+devenv shell example       # Run example
 ```
 
-Or use `devenv shell <script>`:
+Or enter the shell and run commands directly:
 
 ```bash
-devenv shell test
-devenv shell test-race
-devenv shell lint
+devenv shell
+# Now inside devenv shell:
+test
+test-race
+lint
 ```
 
 ## Additional Resources

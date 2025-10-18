@@ -19,6 +19,7 @@
             golangci-lint
             gopls
             git
+            syft
 
             # 基本的なシェルツール
             bashInteractive
@@ -36,6 +37,7 @@
               pkgs.golangci-lint
               pkgs.gopls
               pkgs.git
+              pkgs.syft
               pkgs.bashInteractive
               pkgs.coreutils
             ]}"

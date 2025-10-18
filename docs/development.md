@@ -29,5 +29,5 @@ example       # Run example
 
 - [Go Code Review Comments](https://github.com/golang/go/wiki/CodeReviewComments)
 - [Effective Go](https://go.dev/doc/effective_go)
-- [Nix Flakes Documentation](https://nixos.wiki/wiki/Flakes)
+- [devenv Documentation](https://devenv.sh/)
 - [reviewdog Documentation](https://github.com/reviewdog/reviewdog)

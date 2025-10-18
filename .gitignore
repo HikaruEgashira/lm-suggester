@@ -37,3 +37,10 @@ dist/
 # .idea/
 # .vscode/
 cmd/lm-suggester/lm-suggester
+
+# direnv
+.direnv/
+
+# Nix
+result
+.go/

@@ -2,10 +2,6 @@
 
 ## Development Environment
 
-This project uses [devenv](https://devenv.sh/) for development environment management.
-
-### Setup
-
 ```bash
 devenv shell
 ```
@@ -21,16 +17,6 @@ devenv shell lint          # Run linter
 devenv shell coverage      # Check test coverage
 devenv shell bench         # Run benchmarks
 devenv shell example       # Run example
-```
-
-Or enter the shell and run commands directly:
-
-```bash
-devenv shell
-# Now inside devenv shell:
-test
-test-race
-lint
 ```
 
 ## Additional Resources

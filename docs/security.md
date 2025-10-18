@@ -4,21 +4,6 @@ lm-suggester automatically generates SBOM files to provide transparency about th
 
 ## Local Generation
 
-You can generate SBOM files locally using devenv:
-
-```bash
-# Enter the devenv shell (syft is pre-installed)
-devenv shell
-
-# Generate SPDX format
-syft dir:. -o spdx-json=sbom.spdx.json
-
-# Generate CycloneDX format
-syft dir:. -o cyclonedx-json=sbom.cyclonedx.json
-```
-
-Or using a one-liner:
-
 ```bash
 devenv shell syft dir:. -o spdx-json=sbom.spdx.json
 devenv shell syft dir:. -o cyclonedx-json=sbom.cyclonedx.json

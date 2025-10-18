@@ -85,13 +85,19 @@ through the MCP protocol over stdin/stdout.
 The server provides the following tool:
   - suggest: Post code review suggestions via reviewdog
 
-Example usage with an MCP client:
-  lm-suggester mcp
+Recommended: Use MCP Inspector for testing (handles initialize automatically):
+  npx @modelcontextprotocol/inspector lm-suggester mcp
+  # Open http://localhost:6274 in your browser
 
-Example usage with pipe (stdin will be closed automatically when pipe ends):
-  echo -e 'JSONRPC_MSG1\nJSONRPC_MSG2\nJSONRPC_MSG3' | lm-suggester mcp
+CLI testing with Inspector:
+  npx @modelcontextprotocol/inspector --cli lm-suggester mcp --method tools/list
 
-Example tool call:
+Advanced: Direct JSON-RPC usage (requires manual initialize handshake):
+  echo -e '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{...}}
+  {"jsonrpc":"2.0","method":"notifications/initialized"}
+  {"jsonrpc":"2.0","id":2,"method":"tools/call","params":{...}}' | lm-suggester mcp
+
+Example tool call arguments:
   {
     "file_path": "main.go",
     "base_text": "package main\n\nfunc main() {\n\tprint(\"Hello\")\n}",
@@ -99,7 +105,9 @@ Example tool call:
     "lm_after": "fmt.Println(\"Hello\")",
     "message": "Use fmt.Println instead of print",
     "reporter": "local"
-  }`,
+  }
+
+For more examples, see examples/mcp/README.md`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Create MCP server
 			server := mcp.NewServer(&mcp.Implementation{

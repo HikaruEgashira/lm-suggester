@@ -16,7 +16,7 @@ permissions:
 
 jobs:
   sbom:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, arm64, hikae-flash]
     timeout-minutes: 15
     steps:
       - name: Checkout

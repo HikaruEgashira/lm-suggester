@@ -28,8 +28,10 @@ jobs:
         timeout-minutes: 5
         with:
           go-version: '1.25'
-          # Disable the GitHub-hosted cache to avoid transient
-          # "Failed to save" warnings on self-hosted runners.
+          # Disable the GitHub-hosted cache: the self-hosted runner's cache
+          # service answers HTTP 400, which surfaces as transient
+          # "Failed to restore/save: Cache service responded with 400"
+          # warnings.
           cache: false
 
       - name: Install syft

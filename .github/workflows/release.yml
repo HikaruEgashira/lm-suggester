@@ -25,7 +25,9 @@ jobs:
         timeout-minutes: 5
         with:
           go-version-file: 'go.mod'
-          cache: true
+          # Disable the GitHub-hosted cache to avoid transient
+          # "Failed to save" warnings on self-hosted runners.
+          cache: false
 
       - name: Run tests
         run: go test -v -race ./...

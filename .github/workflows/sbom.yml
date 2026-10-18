@@ -20,11 +20,11 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Checkout
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332  # v4.1.7
+        uses: actions/checkout@v5
         timeout-minutes: 5
 
       - name: Set up Go
-        uses: actions/setup-go@41dfa10bad2bb2ae585af6ee5bb4d7d973ad74ed  # v5.1.0
+        uses: actions/setup-go@v6
         timeout-minutes: 5
         with:
           go-version: '1.25'
@@ -47,15 +47,28 @@ jobs:
           syft dir:. -o cyclonedx-json=sbom.cyclonedx.json
         timeout-minutes: 5
 
-      - name: Submit SBOM to Dependency Graph
-        uses: advanced-security/spdx-dependency-submission-action@5530bab9ee4bbe66420ce8280624036c77f89746  # v0.1.1
+      - name: Generate dependency snapshot
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        with:
-          filePath: sbom.spdx.json
+        run: |
+          syft dir:. -o github-json=sbom.github.json
+        timeout-minutes: 5
+
+      - name: Submit SBOM to Dependency Graph
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          curl -sSfL -X POST \
+            -H "Authorization: Bearer ${GH_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            -H "Content-Type: application/json" \
+            --data-binary @sbom.github.json \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/dependency-graph/snapshots"
         timeout-minutes: 3
 
       - name: Upload SBOM artifacts
-        uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874  # v4.4.0
+        uses: actions/upload-artifact@v5
         with:
           name: sbom-files
           path: |
